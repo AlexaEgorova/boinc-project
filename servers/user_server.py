@@ -1,0 +1,211 @@
+"""User server."""
+from typing import Type, overload
+
+from fastapi import status
+from fastapi.exceptions import HTTPException
+
+from models.users import User, UserFilled
+from models.objects import (
+    ObjTable,
+    ObjChair,
+    ObjMisc,
+    ObjBase
+)
+from helpers.users import (
+    get_user_by_username,
+    fill_in_user,
+    create_user,
+    update_user
+)
+from helpers.objects import (
+    get_obj_by_id
+)
+from helpers.rules import (
+    get_rule_level_by_exp
+)
+from servers.server import Server
+
+
+class UserServer(Server):
+    """User server."""
+
+    async def create_user(
+        self,
+        username: str,
+        default_exp: int,
+        default_money: int,
+    ):
+        """Create a new user."""
+        user = get_user_by_username(
+            self.db,
+            username
+        )
+        if user is not None:
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail="User already exists"
+            )
+        user = User.create_new(
+            username=username,
+            default_exp=default_exp,
+            default_money=default_money
+        )
+        create_user(self.db, user)
+        return user
+
+    async def get_user(
+        self,
+        username: str
+    ) -> User:
+        """Get a user by username."""
+        user = get_user_by_username(
+            self.db,
+            username
+        )
+        if user is None:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="User not found"
+            )
+        return user
+
+    async def get_user_filled(
+        self,
+        username: str
+    ) -> UserFilled:
+        """Get a user by username and fill in owned objects."""
+        user = await self.get_user(username)
+        try:
+            user_filled = fill_in_user(self.db, user)
+        except Exception as detail:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=str(detail)
+            )
+        return user_filled
+
+    async def promote_user(
+        self,
+        username: str,
+        exp_added: int
+    ) -> User:
+        """Get a user by username and fill in owned objects."""
+        user: User = await self.get_user(username)
+        user.total_exp += exp_added
+        rule = get_rule_level_by_exp(self.db, user.total_exp)
+        if rule is None:
+            update_user(self.db, user)
+            return user
+        if rule.level >= user.level:
+            user.level = rule.level
+            update_user(self.db, user)
+        return user
+
+    @overload
+    async def get_obj_by_id(
+        self,
+        obj_id: str,
+        type: Type[ObjTable]
+    ) -> ObjTable:
+        ...
+
+    @overload
+    async def get_obj_by_id(
+        self,
+        obj_id: str,
+        type: Type[ObjChair]
+    ) -> ObjChair:
+        ...
+
+    @overload
+    async def get_obj_by_id(
+        self,
+        obj_id: str,
+        type: Type[ObjMisc]
+    ) -> ObjMisc:
+        ...
+
+    async def get_obj_by_id(
+        self,
+        obj_id: str,
+        type: Type[ObjBase]
+    ):
+        obj = get_obj_by_id(self.db, obj_id, type)
+        if obj is None:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Object not found"
+            )
+        return obj
+
+    async def purchase_table(
+        self,
+        username: str,
+        table_id: str,
+        select_after_purchase: bool
+    ) -> User:
+        user = await self.get_user(username)
+        table: ObjTable = await self.get_obj_by_id(table_id, ObjTable)
+        if table_id in user.owned_tables:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="User already ownes this table"
+            )
+        if user.total_money < table.cost:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Not enough money"
+            )
+        user.total_money -= table.cost
+        user.owned_tables.append(table_id)
+        if select_after_purchase:
+            user.table = table_id
+        return user
+
+    async def purchase_chair(
+        self,
+        username: str,
+        chair_id: str,
+        select_after_purchase: bool
+    ) -> User:
+        user = await self.get_user(username)
+        chair: ObjChair = await self.get_obj_by_id(chair_id, ObjChair)
+        if chair_id in user.owned_chairs:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="User already ownes this chair"
+            )
+        if user.total_money < chair.cost:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Not enough money"
+            )
+        user.total_money -= chair.cost
+        user.owned_chairs.append(chair_id)
+        if select_after_purchase:
+            user.chair = chair_id
+        return user
+
+    async def purchase_misc(
+        self,
+        username: str,
+        misc_id: str,
+        select_after_purchase: bool
+    ) -> User:
+        user = await self.get_user(username)
+        misc: ObjMisc = await self.get_obj_by_id(misc_id, ObjMisc)
+        if misc_id in user.owned_misc:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="User already ownes this misc"
+            )
+        if user.total_money < misc.cost:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Not enough money"
+            )
+        user.total_money -= misc.cost
+        user.owned_misc.append(misc_id)
+        if select_after_purchase:
+            user.misc.append(misc_id)
+        return user

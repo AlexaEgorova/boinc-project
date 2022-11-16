@@ -1,0 +1,43 @@
+version: 1
+disable_existing_loggers: False
+formatters:
+  default:
+    "()": colorlog.ColoredFormatter
+    log_colors:
+      'DEBUG': 'cyan'
+      'INFO': ''
+      'WARNING': 'yellow'
+      'ERROR': 'red'
+      'CRITICAL': 'red,bg_white'
+    datefmt: '%Y-%m-%d %H:%M:%S'
+    format: '%(log_color)s%(asctime)s | %(name)-27s | %(levelname)-8s | %(message)s%(reset)s (%(filename)s:%(lineno)d)'
+  access:
+    "()": colorlog.ColoredFormatter
+    datefmt: '%Y-%m-%d %H:%M:%S'
+    format: '%(log_color)s%(asctime)s | %(name)-27s | %(levelname)-8s | %(message)s%(reset)s'
+    log_colors:
+      'DEBUG': 'cyan'
+      'INFO': 'green'
+      'WARNING': 'yellow'
+      'ERROR': 'red'
+      'CRITICAL': 'red,bg_white'
+handlers:
+  default:
+    formatter: default
+    stream: ext://sys.stdout
+    class: logging.StreamHandler
+  access:
+    formatter: access
+    stream: ext://sys.stdout
+    class: logging.StreamHandler
+loggers:
+  '':
+    level: INFO
+    handlers:
+      - default
+    propagate: no
+  uvicorn.access:
+    level: INFO
+    handlers:
+      - access
+    propagate: no

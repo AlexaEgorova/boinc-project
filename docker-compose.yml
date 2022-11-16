@@ -1,0 +1,53 @@
+version: "3.7"
+
+
+volumes:
+  mongo_data:
+
+
+services:
+  gimmefy-server:
+    build:
+      context: .
+      dockerfile: ./docker/server.Dockerfile
+    env_file:
+      - .env
+    tty: true
+    restart: unless-stopped
+    ports:
+      - "9192:8000"
+
+  mongo-ui:
+    image: mrvautin/adminmongo
+    ports:
+      - 8081:1234
+    environment:
+      - HOST=0.0.0.0
+      - PORT=1234
+      - CONN_NAME=datashop
+      - DB_USERNAME=${MONGO_USER}
+      - DB_PASS=${MONGO_PASSWORD}
+      - DB_HOST=mongo
+      - DB_PORT=27017
+      - DB_NAME=${MONGO_DB}
+      - CONTEXT=mongo
+    command: sh -c "rm ./config/app.json && node app.js"
+    depends_on:
+      - mongo
+    links:
+      - mongo:mongo
+    restart: unless-stopped
+
+
+  mongo:
+    image: mongo:latest
+    ports:
+      - 27017:27017
+    volumes:
+      - mongo_data:/data/db
+    restart: unless-stopped
+    command: --quiet
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
+
