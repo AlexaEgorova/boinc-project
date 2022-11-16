@@ -34,15 +34,24 @@ class UserServer(Server):
         user: User,
         exp_added: int
     ) -> User:
-        """Get a user by username and fill in owned objects."""
+        """Give exp to user."""
         user.total_exp += exp_added
         rule = get_rule_level_by_exp(self.db, user.total_exp)
         if rule is None:
-            update_user(self.db, user)
             return user
         if rule.level >= user.level:
             user.level = rule.level
-            update_user(self.db, user)
+        update_user(self.db, user)
+        return user
+
+    async def _pay_user(
+        self,
+        user: User,
+        money_added: int
+    ) -> User:
+        """Give money to user."""
+        user.total_money += money_added
+        update_user(self.db, user)
         return user
 
     async def create_user(
@@ -67,7 +76,9 @@ class UserServer(Server):
             default_money=default_money
         )
         create_user(self.db, user)
-        return await self._promote_user(user, 0)
+        user = await self._promote_user(user, 0)
+        user = await self._pay_user(user, 0)
+        return user
 
     async def get_user(
         self,
@@ -105,9 +116,18 @@ class UserServer(Server):
         username: str,
         exp_added: int
     ) -> User:
-        """Get a user by username and fill in owned objects."""
+        """Add experience to user."""
         user: User = await self.get_user(username)
         return await self._promote_user(user, exp_added)
+
+    async def pay_user(
+        self,
+        username: str,
+        money_added: int
+    ) -> User:
+        """Add money to user."""
+        user: User = await self.get_user(username)
+        return await self._pay_user(user, money_added)
 
     @overload
     async def get_obj_by_id(

@@ -77,6 +77,23 @@ async def promote_user(
 
 
 @router.post(
+    "/users/{username}/pay",
+    summary="Добавить пользователю денег",
+    response_model=User,
+)
+async def pay_user(
+    username: str,
+    money_added: int,
+    admin: AdminUser = Depends(server.admin_auth),
+) -> User:
+    """Добавить пользователю денег."""
+    return await server.pay_user(
+        username,
+        money_added=money_added
+    )
+
+
+@router.post(
     "/users/{username}/purchase/table/{table_id}",
     summary="Купить стол",
     response_model=User,
