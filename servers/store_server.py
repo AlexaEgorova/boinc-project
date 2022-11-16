@@ -37,15 +37,10 @@ class ServiceServer(Server):
             misc=misc,
         )
 
-    async def update_store(
+    async def _update_store(
         self,
+        store: Store
     ) -> StoreUpdateResult:
-        """Update database."""
-        with self.config.store_path.open("r") as file:
-            data = json.load(file)
-            print(data)
-        store = Store(**data)
-        print(store)
         modified_count = 0
         for table in store.tables:
             modified_count += upsert_obj(self.db, table)
@@ -60,3 +55,21 @@ class ServiceServer(Server):
         return StoreUpdateResult(
             modified_count=modified_count
         )
+
+    async def update_store(
+        self,
+        store: Store
+    ) -> StoreUpdateResult:
+        """Update database."""
+        return await self._update_store(store)
+
+    async def reload_store(
+        self,
+    ) -> StoreUpdateResult:
+        """Reload database."""
+        with self.config.store_path.open("r") as file:
+            data = json.load(file)
+            print(data)
+        store = Store(**data)
+        print(store)
+        return await self._update_store(store)

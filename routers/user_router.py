@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends
-from pydantic import BaseModel
 
 from config import GimmefyServerConfig
 from models.users import User, UserFilled
 from servers.user_server import UserServer
+from servers.server import AdminUser
 
 config = GimmefyServerConfig()
 
@@ -23,6 +23,7 @@ async def create_user(
     username: str,
     default_exp: int = config.default_exp,
     default_money: int = config.default_money,
+    admin: AdminUser = Depends(server.admin_auth),
 ) -> User:
     """Создать нового пользователя."""
     return await server.create_user(
@@ -38,7 +39,8 @@ async def create_user(
     response_model=User,
 )
 async def get_user(
-    username: str
+    username: str,
+    admin: AdminUser = Depends(server.admin_auth),
 ) -> User:
     """Получить пользователя."""
     return await server.get_user(username)
@@ -50,7 +52,8 @@ async def get_user(
     response_model=UserFilled,
 )
 async def get_user_filled(
-    username: str
+    username: str,
+    admin: AdminUser = Depends(server.admin_auth),
 ) -> UserFilled:
     """Получить пользователя и все его предметы."""
     return await server.get_user_filled(username)
@@ -63,7 +66,8 @@ async def get_user_filled(
 )
 async def promote_user(
     username: str,
-    exp_added: int
+    exp_added: int,
+    admin: AdminUser = Depends(server.admin_auth),
 ) -> User:
     """Добавить пользователю опыта."""
     return await server.promote_user(
@@ -81,6 +85,7 @@ async def purchase_table(
     username: str,
     table_id: str,
     select_after_purchase: bool = True,
+    admin: AdminUser = Depends(server.admin_auth),
 ) -> User:
     """Купить стол."""
     return await server.purchase_table(
@@ -99,6 +104,7 @@ async def purchase_chair(
     username: str,
     chair_id: str,
     select_after_purchase: bool = True,
+    admin: AdminUser = Depends(server.admin_auth),
 ) -> User:
     """Купить стул."""
     return await server.purchase_chair(
@@ -117,6 +123,7 @@ async def purchase_misc(
     username: str,
     misc_id: str,
     select_after_purchase: bool = True,
+    admin: AdminUser = Depends(server.admin_auth),
 ) -> User:
     """Купить прочие предметы."""
     return await server.purchase_misc(
