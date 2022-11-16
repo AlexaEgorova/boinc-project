@@ -211,3 +211,44 @@ def upsert_obj(
         update={"$set": obj.dict()},
         upsert=True
     ).modified_count
+
+
+@overload
+def delete_objs(
+    db: Database,
+    filter: dict,
+    type: Type[ObjTable]
+) -> int:
+    """Delete table by id."""
+    ...
+
+
+@overload
+def delete_objs(
+    db: Database,
+    filter: dict,
+    type: Type[ObjChair]
+) -> int:
+    """Delete chair by id."""
+    ...
+
+
+@overload
+def delete_objs(
+    db: Database,
+    filter: dict,
+    type: Type[ObjMisc]
+) -> int:
+    """Delete misc by id."""
+    ...
+
+
+def delete_objs(
+    db: Database,
+    filter: dict,
+    type: Type[ObjBase]
+) -> int:
+    """Delete obj by id."""
+    return db[type.__colname__].delete_many(
+        filter=filter
+    ).deleted_count

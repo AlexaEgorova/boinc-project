@@ -79,3 +79,13 @@ def upsert_rule_level(
         update={"$set": rule.dict()},
         upsert=True
     ).modified_count
+
+
+def delete_rule_levels(
+    db: Database,
+    filter: dict
+) -> int:
+    """Delete rules."""
+    return db[RuleLevel.__colname__].delete_many(
+        filter=filter
+    ).deleted_count

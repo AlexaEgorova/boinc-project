@@ -6,16 +6,17 @@ from models.objects import (
     ObjTable,
     ObjChair,
     ObjMisc,
-    ObjBase
 )
 from models.rules import RuleLevel
 from helpers.objects import (
     upsert_obj,
-    get_objs
+    get_objs,
+    delete_objs
 )
 from helpers.rules import (
     upsert_rule_level,
-    get_rule_levels
+    get_rule_levels,
+    delete_rule_levels
 )
 from servers.server import Server
 
@@ -42,18 +43,49 @@ class ServiceServer(Server):
         store: Store
     ) -> StoreUpdateResult:
         modified_count = 0
+        deleted_count = 0
+        ids = []
         for table in store.tables:
+            ids.append(table.id)
             modified_count += upsert_obj(self.db, table)
-        for chair in store.chairs:
-            modified_count += upsert_obj(self.db, chair)
-        for misc in store.misc:
-            modified_count += upsert_obj(self.db, misc)
+        deleted_count += delete_objs(
+            db=self.db,
+            filter={"id": {"$nin": ids}},
+            type=ObjTable
+        )
 
+        ids = []
+        for chair in store.chairs:
+            ids.append(chair.id)
+            modified_count += upsert_obj(self.db, chair)
+        deleted_count += delete_objs(
+            db=self.db,
+            filter={"id": {"$nin": ids}},
+            type=ObjChair
+        )
+
+        ids = []
+        for misc in store.misc:
+            ids.append(misc.id)
+            modified_count += upsert_obj(self.db, misc)
+        deleted_count += delete_objs(
+            db=self.db,
+            filter={"id": {"$nin": ids}},
+            type=ObjMisc
+        )
+
+        levels = []
         for rule_level in store.rule_levels:
+            levels.append(rule_level.level)
             modified_count += upsert_rule_level(self.db, rule_level)
+        deleted_count += delete_rule_levels(
+            db=self.db,
+            filter={"level": {"$nin": levels}},
+        )
 
         return StoreUpdateResult(
-            modified_count=modified_count
+            modified_count=modified_count,
+            deleted_count=deleted_count
         )
 
     async def update_store(

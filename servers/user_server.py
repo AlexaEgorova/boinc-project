@@ -29,6 +29,22 @@ from servers.server import Server
 class UserServer(Server):
     """User server."""
 
+    async def _promote_user(
+        self,
+        user: User,
+        exp_added: int
+    ) -> User:
+        """Get a user by username and fill in owned objects."""
+        user.total_exp += exp_added
+        rule = get_rule_level_by_exp(self.db, user.total_exp)
+        if rule is None:
+            update_user(self.db, user)
+            return user
+        if rule.level >= user.level:
+            user.level = rule.level
+            update_user(self.db, user)
+        return user
+
     async def create_user(
         self,
         username: str,
@@ -51,7 +67,7 @@ class UserServer(Server):
             default_money=default_money
         )
         create_user(self.db, user)
-        return user
+        return await self._promote_user(user, 0)
 
     async def get_user(
         self,
@@ -91,15 +107,7 @@ class UserServer(Server):
     ) -> User:
         """Get a user by username and fill in owned objects."""
         user: User = await self.get_user(username)
-        user.total_exp += exp_added
-        rule = get_rule_level_by_exp(self.db, user.total_exp)
-        if rule is None:
-            update_user(self.db, user)
-            return user
-        if rule.level >= user.level:
-            user.level = rule.level
-            update_user(self.db, user)
-        return user
+        return await self._promote_user(user, exp_added)
 
     @overload
     async def get_obj_by_id(

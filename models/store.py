@@ -16,6 +16,7 @@ class StoreUpdateResult(SQLModel):
     """Store update result."""
 
     modified_count: int
+    deleted_count: int
 
 
 class Store(SQLModel):
