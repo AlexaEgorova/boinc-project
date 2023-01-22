@@ -6,7 +6,8 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from routers import (
     store_router,
-    user_router
+    user_router,
+    image_router
 )
 
 app = FastAPI(
@@ -25,4 +26,5 @@ app.add_middleware(
 
 app.include_router(user_router.router)
 app.include_router(store_router.router)
+app.include_router(image_router.router)
 app.mount("/assets", StaticFiles(directory="assets"), name="assets")
