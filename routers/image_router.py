@@ -1,8 +1,9 @@
 from fastapi import APIRouter, Depends
 from fastapi.responses import RedirectResponse
+from fastapi.staticfiles import StaticFiles
 
 from config import GimmefyServerConfig
-from models.store import StoreUpdateResult, Store
+
 from servers.store_server import ServiceServer
 from servers.server import AdminUser
 
@@ -43,6 +44,7 @@ level_map = {
 #     """Получить данные объектов."""
 #     return RedirectResponse()
 
+router.mount("/assets", StaticFiles(directory="assets"), name="assets")
 
 @router.get(
     "/img/{username}/score/{total_score}",
@@ -58,5 +60,5 @@ async def get_image(
     for score, lvl in level_map.items():
         if total_score >= score:
             level = lvl
-    image_path = f"assets/rendered/male_level_{level}.png"
-    return RedirectResponse(router.url_path_for(image_path))
+    image_path = f"http://localhost:9192/assets/rendered/male_level_{level}.png"
+    return RedirectResponse(image_path)
