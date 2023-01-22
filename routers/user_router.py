@@ -1,3 +1,4 @@
+from typing import Optional
 from fastapi import APIRouter, Depends
 from fastapi.responses import Response, RedirectResponse
 
@@ -154,15 +155,19 @@ async def purchase_misc(
 @router.post(
     "/user/{username}/gender",
     summary="Сменить пол",
-    response_class=Response,
+    response_class=RedirectResponse,
 )
 async def switch_gender(
-    username: str
-) -> Response:
+    username: str,
+    callback: Optional[str] = None
+) -> RedirectResponse:
     """Сменить пол."""
-    return await server.switch_gender(
+    if callback is None:
+        callback = server.config.base_url
+    await server.switch_gender(
         username=username
     )
+    return RedirectResponse(callback)
 
 
 @router.get(
