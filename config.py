@@ -11,6 +11,7 @@ class EnvSettings(BaseSettings):
 
     class Config:
         """Overrides for BaseSettings model."""
+
         env_file = '.env'
         env_file_encoding = 'utf-8'
 
@@ -27,6 +28,8 @@ class MongoDBParams(MongoDBConfig, EnvSettings):
 
 class GimmefyServerConfig(EnvSettings):
     """Telemetry server configuration."""
+
+    base_url: str = Field("http://localhost:9192", env="GIMMEFY_URL")
 
     default_exp: int = Field(0, env="GIMMEFY_DEFAULT_EXP")
     default_money: int = Field(200, env="GIMMEFY_DEFAULT_MONEY")

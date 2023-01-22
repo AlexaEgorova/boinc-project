@@ -2,6 +2,7 @@
 from typing import Type, overload
 
 from fastapi import status
+from fastapi.responses import Response, RedirectResponse
 from fastapi.exceptions import HTTPException
 
 from models.users import User, UserFilled
@@ -32,10 +33,14 @@ class UserServer(Server):
     async def _promote_user(
         self,
         user: User,
-        exp_added: int
+        exp_added: int = 0,
+        total_exp: float = 0
     ) -> User:
         """Give exp to user."""
-        user.total_exp += exp_added
+        if exp_added:
+            user.total_exp += exp_added
+        if total_exp:
+            user.total_exp = total_exp
         rule = get_rule_level_by_exp(self.db, user.total_exp)
         if rule is None:
             return user
@@ -188,6 +193,7 @@ class UserServer(Server):
         user.owned_tables.append(table_id)
         if select_after_purchase:
             user.table = table_id
+        update_user(self.db, user)
         return user
 
     async def purchase_chair(
@@ -212,6 +218,7 @@ class UserServer(Server):
         user.owned_chairs.append(chair_id)
         if select_after_purchase:
             user.chair = chair_id
+        update_user(self.db, user)
         return user
 
     async def purchase_misc(
@@ -236,4 +243,44 @@ class UserServer(Server):
         user.owned_misc.append(misc_id)
         if select_after_purchase:
             user.misc.append(misc_id)
+        update_user(self.db, user)
         return user
+
+    async def switch_gender(
+        self,
+        username: str
+    ) -> Response:
+        """Switch gender."""
+        user = await self.get_user(username)
+        if user is None:
+            user = await self.create_user(
+                username=username,
+                default_exp=0,
+                default_money=0
+            )
+        if user.gender == 'male':
+            user.gender = 'female'
+        else:
+            user.gender = 'male'
+        update_user(self.db, user)
+        return Response()
+
+    async def get_avatar(
+        self,
+        username: str,
+        total_score: float
+    ) -> RedirectResponse:
+        """Get user avatar."""
+        user = await self.get_user(username)
+        if user is None:
+            user = await self.create_user(
+                username=username,
+                default_exp=0,
+                default_money=0
+            )
+
+        user = await self._promote_user(user, total_exp=total_score)
+
+        img = f"{user.gender}_level_{user.level}.png"
+        url = self.config.base_url + f"/assets/rendered/{img}"
+        return RedirectResponse(url)

@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends
+from fastapi.responses import Response, RedirectResponse
 
 from config import GimmefyServerConfig
 from models.users import User, UserFilled
@@ -147,4 +148,34 @@ async def purchase_misc(
         username,
         misc_id,
         select_after_purchase
+    )
+
+
+@router.post(
+    "/user/{username}/gender",
+    summary="Сменить пол",
+    response_class=Response,
+)
+async def switch_gender(
+    username: str
+) -> Response:
+    """Сменить пол."""
+    return await server.switch_gender(
+        username=username
+    )
+
+
+@router.get(
+    "/user/{username}/image/{total_score}",
+    summary="Получить аватар",
+    response_class=RedirectResponse,
+)
+async def get_avatar(
+    username: str,
+    total_score: float
+) -> RedirectResponse:
+    """Получить аватар."""
+    return await server.get_avatar(
+        username=username,
+        total_score=total_score
     )

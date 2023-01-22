@@ -18,9 +18,10 @@ class User(SQLModel):
     __colname__: str = "users"  # type: ignore
 
     username: str
+    gender: str = "male"
 
     level: int = 1
-    total_exp: int
+    total_exp: float
     total_money: int
 
     # character: CharacterSet = Field(default_factory=list)
@@ -53,6 +54,7 @@ class UserFilled(SQLModel):
     """User filled."""
 
     username: str
+    gender: str = "male"
 
     level: int
     total_exp: int

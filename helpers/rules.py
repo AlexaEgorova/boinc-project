@@ -22,7 +22,7 @@ def get_rule_level_by_level(
 
 def get_rule_level_by_exp(
     db: Database,
-    exp: int,
+    exp: float,
 ) -> Optional[RuleLevel]:
     """Get rule by level."""
     data = db[RuleLevel.__colname__].find_one(
