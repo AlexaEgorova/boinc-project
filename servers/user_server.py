@@ -87,7 +87,8 @@ class UserServer(Server):
 
     async def get_user(
         self,
-        username: str
+        username: str,
+        do_create: bool = False,
     ) -> User:
         """Get a user by username."""
         user = get_user_by_username(
@@ -95,9 +96,15 @@ class UserServer(Server):
             username
         )
         if user is None:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="User not found"
+            if not do_create:
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail="User not found"
+                )
+            user = await self.create_user(
+                username=username,
+                default_exp=0,
+                default_money=0
             )
         return user
 
@@ -251,13 +258,10 @@ class UserServer(Server):
         username: str
     ) -> Response:
         """Switch gender."""
-        user = await self.get_user(username)
-        if user is None:
-            user = await self.create_user(
-                username=username,
-                default_exp=0,
-                default_money=0
-            )
+        user = await self.get_user(
+            username,
+            do_create=True
+        )
         if user.gender == 'male':
             user.gender = 'female'
         else:
@@ -271,13 +275,10 @@ class UserServer(Server):
         total_score: float
     ) -> RedirectResponse:
         """Get user avatar."""
-        user = await self.get_user(username)
-        if user is None:
-            user = await self.create_user(
-                username=username,
-                default_exp=0,
-                default_money=0
-            )
+        user = await self.get_user(
+            username,
+            do_create=True
+        )
 
         user = await self._promote_user(user, total_exp=total_score)
 
