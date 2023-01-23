@@ -184,3 +184,18 @@ async def get_avatar(
         username=username,
         total_score=total_score
     )
+
+@router.get(
+    "/zpg/user/{username}/tip/{total_score}",
+    summary="Получить совет",
+    response_model=str,
+)
+async def get_tip(
+    username: str,
+    total_score: float
+) -> str:
+    """Получить совет."""
+    return await server.get_tip(
+        username=username,
+        total_score=total_score
+    )

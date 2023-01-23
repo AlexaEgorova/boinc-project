@@ -22,7 +22,8 @@ from helpers.objects import (
     get_obj_by_id
 )
 from helpers.rules import (
-    get_rule_level_by_exp
+    get_rule_level_by_exp,
+    get_rule_level_by_level
 )
 from servers.server import Server
 
@@ -285,3 +286,26 @@ class UserServer(Server):
         img = f"{user.gender}_level_{user.level}.png"
         url = self.config.base_url + f"/assets/rendered/{img}"
         return RedirectResponse(url)
+
+    async def get_tip(
+        self,
+        username: str,
+        total_score: float
+    ) -> str:
+        """Get tip."""
+        user = await self.get_user(
+            username,
+            do_create=True
+        )
+
+        user = await self._promote_user(user, total_exp=total_score)
+
+        tip = "<b>Совет дня:</b> не програмируйте на PHP"
+        next_level = get_rule_level_by_level(self.db, user.level + 1)
+        if next_level:
+            left = next_level.exp_gte - user.total_exp
+            tip = (
+                f"<b>Совет дня:</b> до следующего уровня осталось всего {left}"
+                " очков!"
+            )
+        return tip

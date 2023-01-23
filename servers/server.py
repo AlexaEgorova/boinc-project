@@ -1,4 +1,5 @@
 """Base server."""
+import json
 from typing import Optional
 from logging import Logger, getLogger
 
@@ -11,6 +12,7 @@ from fastapi.security import (
 
 from sqlmodel import SQLModel
 
+from models.store import Store
 
 from config import GimmefyServerConfig
 from mongo import get_mongo_client, Database
@@ -66,5 +68,13 @@ class Server:
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Authentication not provided",
         )
+
+    def _reload_store(self):
+        with self.config.store_path.open("r") as file:
+            data = json.load(file)
+            print(data)
+        store = Store(**data)
+        print(store)
+        return await self._update_store(store)
 
 
