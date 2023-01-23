@@ -4,6 +4,7 @@ from typing import Type, overload
 from fastapi import status
 from fastapi.responses import Response, RedirectResponse
 from fastapi.exceptions import HTTPException
+from helpers.tip_gen import tip_gen
 
 from models.users import User, UserFilled, UserTip
 from models.objects import (
@@ -299,13 +300,9 @@ class UserServer(Server):
         )
 
         user = await self._promote_user(user, total_exp=total_score)
-
-        tip = "<b>Совет дня:</b> не програмируйте на PHP"
-        next_level = get_rule_level_by_level(self.db, user.level + 1)
-        if next_level:
-            left = next_level.exp_gte - user.total_exp
-            tip = (
-                f"<b>Совет дня:</b> до следующего уровня осталось всего {left}"
-                " очков!"
-            )
-        return UserTip(text=tip)
+        return tip_gen(
+            self.db,
+            user,
+            self.model,
+            self.tokenizer,
+        )

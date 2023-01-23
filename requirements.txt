@@ -6,4 +6,5 @@ sqlmodel
 uvicorn[standard]==0.15.0
 gunicorn==20.1.0
 fastapi==0.68.1
-
+torch==1.13.1
+transformers==4.25.1

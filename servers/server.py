@@ -12,6 +12,16 @@ from fastapi.security import (
 from sqlmodel import SQLModel
 
 
+import os
+import argparse
+import logging
+import numpy as np
+import torch
+from transformers import (
+    GPT2LMHeadModel,
+    GPT2Tokenizer)
+
+
 from config import GimmefyServerConfig
 from mongo import get_mongo_client, Database
 
@@ -34,6 +44,8 @@ class Server:
 
         self.db: Database = get_mongo_client(config.mongo)[config.mongo.db]
         self.config: GimmefyServerConfig = config
+
+        self.model, self.tokenizer = self._load_model()
 
     def _user_auth_basic(
         self,
@@ -66,3 +78,18 @@ class Server:
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Authentication not provided",
         )
+
+    def _load_model(self):
+        device = torch.device("cpu")
+        model_class, tokenizer_class = (
+            GPT2LMHeadModel,
+            GPT2Tokenizer
+        )
+        self.tokenizer = tokenizer_class.from_pretrained(
+            'sberbank-ai/rugpt3medium_based_on_gpt2'
+        )
+        self.model = model_class.from_pretrained(
+            'sberbank-ai/rugpt3medium_based_on_gpt2'
+        )
+        self.model.to(device)
+        return self.model, self.tokenizer
