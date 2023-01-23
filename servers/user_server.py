@@ -320,6 +320,7 @@ class UserServer(Server):
         return tip_gen(
             self.db,
             user,
+            expavg_score,
             self.model,
             self.tokenizer,
         )
