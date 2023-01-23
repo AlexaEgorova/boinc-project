@@ -1,3 +1,4 @@
+from datetime import datetime, timezone
 from typing import List
 
 from sqlmodel import SQLModel, Field
@@ -19,6 +20,10 @@ class User(SQLModel):
 
     username: str
     gender: str = "male"
+
+    last_online: datetime = Field(
+        default_factory=lambda: datetime.now(timezone.utc)
+    )
 
     level: int = 1
     total_exp: float

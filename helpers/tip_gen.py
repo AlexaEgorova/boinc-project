@@ -50,15 +50,15 @@ def _ask_model(model, tokenizer, query):
 def _tip_gen_mot(db: Database, user: User) -> str:
     """Фразы-мотиваторы."""
     tips = [
-        "сейчас бы решить какую-нибудь задачку",
-        "давно не занимались"
+        "сейчас бы решить какую-нибудь задачку!",
+        "давно не занимались!"
     ]
     return choice(tips).capitalize()
 
 
 def _tip_gen_prj(db: Database, user: User) -> str:
     """Выдержки из описания проекта."""
-    total_users = db[User.__colname__].count()
+    total_users = db[User.__colname__].count({})
     tips = [
         f"а вы знали, что у нас уже {total_users} пользователей?"
     ]
@@ -67,8 +67,8 @@ def _tip_gen_prj(db: Database, user: User) -> str:
 
 def _tip_gen_lab(db: Database, user: User) -> str:
     tips = [
-        "так хочется ещё одну колбу",
-        "скорее бы уже микроскоп"
+        "так хочется ещё одну колбу...",
+        "скорее бы уже микроскоп..."
     ]
     return choice(tips).capitalize()
 
@@ -76,8 +76,8 @@ def _tip_gen_lab(db: Database, user: User) -> str:
 def _tip_gen_avatar(db: Database, user: User) -> str:
     """Фразы научного-сотрудника."""
     tips = [
-        "хочу селекционировать новый вид хищных растений",
-        "надо бы доказать теорему"
+        "хочу селекционировать новый вид хищных растений.",
+        "надо бы доказать теорему."
     ]
     return choice(tips).capitalize()
 
@@ -86,8 +86,8 @@ def _tip_gen_general(db: Database, user: User) -> str:
     """Фразы научного-сотрудника."""
     tips = [
         "здравствуй!",
-        "рад тебя видеть",
-        "погода сегодня очень подходит для научных свершений"
+        "рад тебя видеть!",
+        "погода сегодня очень подходит для научных свершений!"
     ]
     return choice(tips).capitalize()
 
@@ -96,7 +96,7 @@ def _tip_gen_astrology(db: Database, user: User) -> str:
     """Фразы астрологизмы."""
     tips = [
         "Хмм отрицательная производная в фазе меркурия"
-        ", видимо, он ретроградный"
+        ", видимо, он ретроградный..."
     ]
     return choice(tips).capitalize()
 
@@ -113,27 +113,64 @@ def _tip_gen_lvl(db: Database, user: User) -> str:
     return tip
 
 
+TIPS_HELLO = [
+    "general",
+]
+
+TIPS_LAZY = [
+    "mot",
+    "lab",
+    "avatar",
+    "astrology",
+]
+
+TIPS_BUSY = [
+    "mot",
+    "avatar",
+    "astrology",
+]
+
 TIP_GENS = {
-    "lvl": _tip_gen_lvl,
+    "general": _tip_gen_general,
     "mot": _tip_gen_mot,
-    "prj": _tip_gen_prj,
     "lab": _tip_gen_lab,
     "avatar": _tip_gen_avatar,
-    "general": _tip_gen_general,
     "astrology": _tip_gen_astrology,
+    # "lvl": _tip_gen_lvl,
+    # "prj": _tip_gen_prj,
 }
 
 
 def tip_gen(
     db: Database,
     user: User,
+    expavg_score: float,
     model,
     tokenizer
 ) -> UserTip:
+    now = datetime.now(timezone.utc)
+    onl = user.last_online
+    if now.date() != onl.date():
+        return UserTip(
+            text=_ask_model(
+                model,
+                tokenizer,
+                TIP_GENS[choice(TIPS_HELLO)](db, user)
+            )
+        )
+    if expavg_score > 0.5:
+        return UserTip(
+            text=_ask_model(
+                model,
+                tokenizer,
+                TIP_GENS[choice(TIPS_BUSY)](db, user)
+            )
+        )
+
     return UserTip(
         text=_ask_model(
             model,
             tokenizer,
-            TIP_GENS[choice(list(TIP_GENS.keys()))](db, user)
+            TIP_GENS[choice(TIPS_LAZY)](db, user)
         )
     )
