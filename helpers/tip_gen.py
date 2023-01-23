@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 import math
 from random import choice
 from typing import Optional, List
@@ -19,7 +19,7 @@ def calc_score(
         return 1 / (1 + math.exp(-x))
 
     delta_t = (
-        datetime.utcnow() - registration_time
+        datetime.now(timezone.utc) - registration_time
     ).total_seconds() / 3600
 
     return 50 * (cpus + 1) * sigmoid(0.5 * delta_t + expavg_score)
