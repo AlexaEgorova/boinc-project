@@ -6,6 +6,9 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -U pip setuptools wheel \
  && pip install --no-cache-dir -Ur requirements.txt
 
+COPY preload_model.py preload_model.py
+RUN python preload_model.py
+
 COPY . .
 
 ENV WORKERS_PER_CORE=1

@@ -26,9 +26,7 @@ def _ask_model(model, tokenizer, query):
         output_sequences[0],
         clean_up_tokenization_spaces=True
     )
-    return text.__repr__()
-
-
+    return "<i>" + str(text).replace("\n", "<br>") + "</i>"
 
 
 def _tip_gen_mot(db: Database, user: User) -> str:
