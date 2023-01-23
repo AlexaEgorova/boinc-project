@@ -172,7 +172,7 @@ async def switch_gender(
 
 
 @router.get(
-    "/zpg/user/{username}/image/{total_score}",
+    "/zpg/user/{username}/image",
     summary="Получить аватар",
     response_class=RedirectResponse,
 )
@@ -192,7 +192,7 @@ async def get_avatar(
 
 
 @router.get(
-    "/zpg/user/{username}/tip/{total_score}",
+    "/zpg/user/{username}/tip",
     summary="Получить совет",
     response_model=UserTip,
 )
