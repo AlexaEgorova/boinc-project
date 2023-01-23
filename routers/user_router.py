@@ -185,6 +185,7 @@ async def get_avatar(
         total_score=total_score
     )
 
+
 @router.get(
     "/zpg/user/{username}/tip/{total_score}",
     summary="Получить совет",
