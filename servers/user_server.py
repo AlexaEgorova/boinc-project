@@ -1,10 +1,12 @@
 """User server."""
+import math
+from datetime import datetime
 from typing import Type, overload
 
 from fastapi import status
 from fastapi.responses import Response, RedirectResponse
 from fastapi.exceptions import HTTPException
-from helpers.tip_gen import tip_gen
+from helpers.tip_gen import calc_score, tip_gen
 
 from models.users import User, UserFilled, UserTip
 from models.objects import (
@@ -42,7 +44,7 @@ class UserServer(Server):
         if exp_added:
             user.total_exp += exp_added
         if total_exp:
-            user.total_exp = total_exp
+            user.total_exp = max(user.total_exp, total_exp)
         rule = get_rule_level_by_exp(self.db, user.total_exp)
         if rule is None:
             return user
@@ -274,7 +276,9 @@ class UserServer(Server):
     async def get_avatar(
         self,
         username: str,
-        total_score: float
+        expavg_score: float,
+        cpus: int,
+        registration_time: datetime,
     ) -> RedirectResponse:
         """Get user avatar."""
         user = await self.get_user(
@@ -282,6 +286,11 @@ class UserServer(Server):
             do_create=True
         )
 
+        total_score = calc_score(
+            expavg_score,
+            cpus,
+            registration_time,
+        )
         user = await self._promote_user(user, total_exp=total_score)
 
         img = f"{user.gender}_level_{user.level}.png"
@@ -291,7 +300,9 @@ class UserServer(Server):
     async def get_tip(
         self,
         username: str,
-        total_score: float
+        expavg_score: float,
+        cpus: int,
+        registration_time: datetime,
     ) -> UserTip:
         """Get tip."""
         user = await self.get_user(
@@ -299,7 +310,13 @@ class UserServer(Server):
             do_create=True
         )
 
+        total_score = calc_score(
+            expavg_score,
+            cpus,
+            registration_time,
+        )
         user = await self._promote_user(user, total_exp=total_score)
+
         return tip_gen(
             self.db,
             user,

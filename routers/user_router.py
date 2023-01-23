@@ -1,6 +1,7 @@
+from datetime import datetime
 from typing import Optional
 from fastapi import APIRouter, Depends
-from fastapi.responses import Response, RedirectResponse
+from fastapi.responses import RedirectResponse
 
 from config import GimmefyServerConfig
 from models.users import User, UserFilled, UserTip
@@ -177,12 +178,16 @@ async def switch_gender(
 )
 async def get_avatar(
     username: str,
-    total_score: float
+    expavg_score: float,
+    cpus: int,
+    registration_time: datetime,
 ) -> RedirectResponse:
     """Получить аватар."""
     return await server.get_avatar(
         username=username,
-        total_score=total_score
+        expavg_score=expavg_score,
+        cpus=cpus,
+        registration_time=registration_time,
     )
 
 
@@ -193,10 +198,14 @@ async def get_avatar(
 )
 async def get_tip(
     username: str,
-    total_score: float
+    expavg_score: float,
+    cpus: int,
+    registration_time: datetime,
 ) -> UserTip:
     """Получить совет."""
     return await server.get_tip(
         username=username,
-        total_score=total_score
+        expavg_score=expavg_score,
+        cpus=cpus,
+        registration_time=registration_time,
     )

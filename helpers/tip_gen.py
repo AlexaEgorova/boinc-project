@@ -1,3 +1,5 @@
+from datetime import datetime
+import math
 from random import choice
 from typing import Optional, List
 
@@ -5,6 +7,22 @@ from mongo import Database
 
 from models.users import User, UserTip
 from helpers.rules import get_rule_level_by_level
+
+
+def calc_score(
+    expavg_score: float,
+    cpus: int,
+    registration_time: datetime,
+):
+    """Calculate the score."""
+    def sigmoid(x: float) -> float:
+        return 1 / (1 + math.exp(-x))
+
+    delta_t = (
+        datetime.utcnow() - registration_time
+    ).total_seconds() / 3600
+
+    return 50 * (cpus + 1) * sigmoid(0.5 * delta_t + expavg_score)
 
 
 def _ask_model(model, tokenizer, query):
