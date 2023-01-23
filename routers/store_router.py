@@ -15,7 +15,7 @@ router = APIRouter(
 
 
 @router.get(
-    "/store",
+    "/zpg/store",
     summary="Получить данные объектов",
     response_model=Store,
 )
@@ -27,7 +27,7 @@ async def get_store(
 
 
 @router.post(
-    "/store",
+    "/zpg/store",
     summary="Обновить бвзу объектов",
     response_model=StoreUpdateResult,
 )
@@ -40,7 +40,7 @@ async def update_store(
 
 
 @router.post(
-    "/store/reload_internal",
+    "/zpg/store/reload_internal",
     summary="Перезагрузить данные объектов из json",
     response_model=StoreUpdateResult,
 )

@@ -11,8 +11,8 @@ from routers import (
 
 app = FastAPI(
     title="Gimmefy API",
-    openapi_url="/openapi.json",
-    docs_url="/docs",
+    openapi_url="/zpg/openapi.json",
+    docs_url="/zpg/docs",
 )
 
 app.add_middleware(
@@ -25,4 +25,4 @@ app.add_middleware(
 
 app.include_router(user_router.router)
 app.include_router(store_router.router)
-app.mount("/assets", StaticFiles(directory="assets"), name="assets")
+app.mount("/zpg/assets", StaticFiles(directory="assets"), name="assets")

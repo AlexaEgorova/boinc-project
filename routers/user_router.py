@@ -17,7 +17,7 @@ router = APIRouter(
 
 
 @router.post(
-    "/users",
+    "/zpg/users",
     summary="Создать нового пользователя",
     response_model=User,
 )
@@ -36,7 +36,7 @@ async def create_user(
 
 
 @router.get(
-    "/users/{username}",
+    "/zpg/users/{username}",
     summary="Получить пользователя",
     response_model=User,
 )
@@ -49,7 +49,7 @@ async def get_user(
 
 
 @router.get(
-    "/users/{username}/filled",
+    "/zpg/users/{username}/filled",
     summary="Получить пользователя и все его предметы",
     response_model=UserFilled,
 )
@@ -62,7 +62,7 @@ async def get_user_filled(
 
 
 @router.post(
-    "/users/{username}/promote",
+    "/zpg/users/{username}/promote",
     summary="Добавить пользователю опыта",
     response_model=User,
 )
@@ -79,7 +79,7 @@ async def promote_user(
 
 
 @router.post(
-    "/users/{username}/pay",
+    "/zpg/users/{username}/pay",
     summary="Добавить пользователю денег",
     response_model=User,
 )
@@ -96,7 +96,7 @@ async def pay_user(
 
 
 @router.post(
-    "/users/{username}/purchase/table/{table_id}",
+    "/zpg/users/{username}/purchase/table/{table_id}",
     summary="Купить стол",
     response_model=User,
 )
@@ -115,7 +115,7 @@ async def purchase_table(
 
 
 @router.post(
-    "/users/{username}/purchase/chair/{chair_id}",
+    "/zpg/users/{username}/purchase/chair/{chair_id}",
     summary="Купить стул",
     response_model=User,
 )
@@ -134,7 +134,7 @@ async def purchase_chair(
 
 
 @router.post(
-    "/users/{username}/purchase/misc/{misc_id}",
+    "/zpg/users/{username}/purchase/misc/{misc_id}",
     summary="Купить прочие предметы",
     response_model=User,
 )
@@ -153,7 +153,7 @@ async def purchase_misc(
 
 
 @router.post(
-    "/user/{username}/gender",
+    "/zpg/user/{username}/gender",
     summary="Сменить пол",
     response_class=RedirectResponse,
 )
@@ -171,7 +171,7 @@ async def switch_gender(
 
 
 @router.get(
-    "/user/{username}/image/{total_score}",
+    "/zpg/user/{username}/image/{total_score}",
     summary="Получить аватар",
     response_class=RedirectResponse,
 )
