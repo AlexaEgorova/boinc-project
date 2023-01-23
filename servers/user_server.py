@@ -5,7 +5,7 @@ from fastapi import status
 from fastapi.responses import Response, RedirectResponse
 from fastapi.exceptions import HTTPException
 
-from models.users import User, UserFilled
+from models.users import User, UserFilled, UserTip
 from models.objects import (
     ObjTable,
     ObjChair,
@@ -291,7 +291,7 @@ class UserServer(Server):
         self,
         username: str,
         total_score: float
-    ) -> str:
+    ) -> UserTip:
         """Get tip."""
         user = await self.get_user(
             username,
@@ -308,4 +308,4 @@ class UserServer(Server):
                 f"<b>Совет дня:</b> до следующего уровня осталось всего {left}"
                 " очков!"
             )
-        return tip
+        return UserTip(text=tip)

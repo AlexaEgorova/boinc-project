@@ -67,3 +67,10 @@ class UserFilled(SQLModel):
     owned_tables: List[ObjTable] = Field(default_factory=list)
     owned_chairs: List[ObjChair] = Field(default_factory=list)
     owned_misc: List[ObjMisc] = Field(default_factory=list)
+
+
+
+class UserTip(SQLModel):
+    """User tip."""
+
+    text: str

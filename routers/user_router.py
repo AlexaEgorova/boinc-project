@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends
 from fastapi.responses import Response, RedirectResponse
 
 from config import GimmefyServerConfig
-from models.users import User, UserFilled
+from models.users import User, UserFilled, UserTip
 from servers.user_server import UserServer
 from servers.server import AdminUser
 
@@ -189,12 +189,12 @@ async def get_avatar(
 @router.get(
     "/zpg/user/{username}/tip/{total_score}",
     summary="Получить совет",
-    response_model=str,
+    response_model=UserTip,
 )
 async def get_tip(
     username: str,
     total_score: float
-) -> str:
+) -> UserTip:
     """Получить совет."""
     return await server.get_tip(
         username=username,
