@@ -209,3 +209,23 @@ async def get_tip(
         cpus=cpus,
         registration_time=registration_time,
     )
+
+
+@router.get(
+    "/zpg/user/{username}/level",
+    summary="Получить уровень",
+    response_model=User,
+)
+async def get_level(
+    username: str,
+    expavg_score: float,
+    cpus: int,
+    registration_time: datetime,
+) -> User:
+    """Получить уровень."""
+    return await server.get_level(
+        username=username,
+        expavg_score=expavg_score,
+        cpus=cpus,
+        registration_time=registration_time,
+    )

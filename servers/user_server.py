@@ -31,6 +31,25 @@ from helpers.rules import (
 from servers.server import Server
 
 
+LVL_MAP = {
+    1: {"level_name": "абитуриент", "year": ""},
+    2: {"level_name": "бакалавр", "year": "1 курс"},
+    3: {"level_name": "бакалавр", "year": "2 курс"},
+    4: {"level_name": "бакалавр", "year": "3 курс"},
+    5: {"level_name": "бакалавр", "year": "4 курс"},
+    6: {"level_name": "магистр", "year": "1 курс"},
+    7: {"level_name": "магистр", "year": "2 курс"},
+    8: {"level_name": "аспирант", "year": "1 курс"},
+    9: {"level_name": "аспирант", "year": "2 курс"},
+    10: {"level_name": "аспирант", "year": "3 курс"},
+    11: {"level_name": "аспирант", "year": "4 курс"},
+    12: {"level_name": "кандидат наук", "year": ""},
+    13: {"level_name": "доктор наук", "year": ""},
+    14: {"level_name": "доктор наук", "year": ""},
+    15: {"level_name": "доктор наук", "year": ""},
+}
+
+
 class UserServer(Server):
     """User server."""
 
@@ -50,6 +69,9 @@ class UserServer(Server):
             return user
         if rule.level >= user.level:
             user.level = rule.level
+        _map = LVL_MAP[user.level]
+        user.level_name = _map["level_name"]
+        user.year = _map["year"]
         update_user(self.db, user)
         return user
 
@@ -324,3 +346,24 @@ class UserServer(Server):
             self.model,
             self.tokenizer,
         )
+
+    async def get_level(
+        self,
+        username: str,
+        expavg_score: float,
+        cpus: int,
+        registration_time: datetime,
+    ) -> User:
+        """Get user avatar."""
+        user = await self.get_user(
+            username,
+            do_create=True
+        )
+
+        total_score = calc_score(
+            expavg_score,
+            cpus,
+            registration_time,
+        )
+        user = await self._promote_user(user, total_exp=total_score)
+        return user
