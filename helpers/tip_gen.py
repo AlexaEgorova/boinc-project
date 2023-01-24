@@ -167,10 +167,13 @@ def tip_gen(
             )
         )
 
+    text = _ask_model(
+        model,
+        tokenizer,
+        TIP_GENS[choice(TIPS_LAZY)](db, user)
+    )
+    text = ".".join(text.split(".")[:-1])
+
     return UserTip(
-        text=_ask_model(
-            model,
-            tokenizer,
-            TIP_GENS[choice(TIPS_LAZY)](db, user)
-        )
+        text=text
     )
