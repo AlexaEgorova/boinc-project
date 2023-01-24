@@ -20,9 +20,9 @@ def calc_score(
 
     delta_t = (
         datetime.now(timezone.utc) - registration_time
-    ).total_seconds() / 3600
+    ).total_seconds() / (3600 * 24)
 
-    return 50 * (cpus + 1) * sigmoid(0.5 * delta_t + expavg_score)
+    return 50 * (cpus + 1) * sigmoid(0.01 * (delta_t + expavg_score))
 
 
 def _ask_model(model, tokenizer, query):
