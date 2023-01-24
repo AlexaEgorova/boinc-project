@@ -366,6 +366,7 @@ class UserServer(Server):
         )
 
         total_score = calc_score(
+            total_score,
             expavg_score,
             cpus,
             registration_time,
