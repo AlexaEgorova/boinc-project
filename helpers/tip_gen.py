@@ -152,42 +152,38 @@ def tip_gen(
     now = datetime.now(timezone.utc)
     onl = user.last_online
     if now.date() != onl.date():
-        return UserTip(
-            text=_ask_model(
-                model,
-                tokenizer,
-                TIP_GENS[choice(TIPS_HELLO)](db, user)
-            )
+        text = _ask_model(
+            model,
+            tokenizer,
+            TIP_GENS[choice(TIPS_HELLO)](db, user)
         )
-    if expavg_score > 0.5:
-        return UserTip(
-            text=_ask_model(
-                model,
-                tokenizer,
-                TIP_GENS[choice(TIPS_BUSY)](db, user)
-            )
+    elif expavg_score > 0.5:
+        text = _ask_model(
+            model,
+            tokenizer,
+            TIP_GENS[choice(TIPS_BUSY)](db, user)
         )
 
-    text: str = _ask_model(
-        model,
-        tokenizer,
-        TIP_GENS[choice(TIPS_LAZY)](db, user)
-    )
+    else:
+        text = _ask_model(
+            model,
+            tokenizer,
+            TIP_GENS[choice(TIPS_LAZY)](db, user)
+        )
     # for _ in range(10):
     #     text = text.replace("\n\n\n", "\n\n")
     text = text.strip(" \n")
 
-    text = text\
-        .split("0")[0]\
-        .split("1")[0]\
-        .split("2")[0]\
-        .split("3")[0]\
-        .split("4")[0]\
-        .split("5")[0]\
-        .split("6")[0]\
-        .split("7")[0]\
-        .split("8")[0]\
-        .split("9")[0]
+    text = text.split("0")[0]
+    text = text.split("1")[0]
+    text = text.split("2")[0]
+    text = text.split("3")[0]
+    text = text.split("4")[0]
+    text = text.split("5")[0]
+    text = text.split("6")[0]
+    text = text.split("7")[0]
+    text = text.split("8")[0]
+    text = text.split("9")[0]
 
     text = ".".join(text.split(".")[:-1])
     text = ",".join(text.split(",")[:-1]) + "."
