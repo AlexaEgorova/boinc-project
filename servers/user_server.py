@@ -346,7 +346,6 @@ class UserServer(Server):
         return tip_gen(
             self.db,
             user,
-            total_score,
             expavg_score,
             self.model,
             self.tokenizer,
