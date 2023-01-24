@@ -185,8 +185,10 @@ def tip_gen(
     text = text.split("8")[0]
     text = text.split("9")[0]
 
-    text = ".".join(text.split(".")[:-1])
-    text = ",".join(text.split(",")[:-1]) + "."
+    if len(text.split(".")) > 2:
+        text = ".".join(text.split(".")[:-1])
+    if len(text.split(",")) > 2:
+        text = ",".join(text.split(",")[:-1]) + "."
     if len(text.split("\n")) > 2:
         text = "\n".join(text.split("\n")[:-1])
 
