@@ -45,7 +45,7 @@ def _ask_model(model, tokenizer, query):
         output_sequences[0],
         clean_up_tokenization_spaces=True
     )
-    return text
+    return str(text)
 
 
 def _tip_gen_mot(db: Database, user: User) -> str:
@@ -174,13 +174,13 @@ def tip_gen(
         TIP_GENS[choice(TIPS_LAZY)](db, user)
     )
     for _ in range(10):
-        text = text.replace("\n\n", "\n")
-    text = text.strip().rstrip("\n")
+        text = text.replace("\n\n\n", "\n\n")
+    text = text.strip()
     text = ".".join(text.split(".")[:-1])
     if len(text.split("\n")) > 2:
         text = "\n".join(text.split("\n")[:-1])
 
-    text = "<i>" + str(text).replace("\n", "<br>") + "</i>"
+    text = "<i>" + text.replace("\n", "<br>") + "</i>"
 
     return UserTip(
         text=text
