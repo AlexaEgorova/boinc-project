@@ -70,6 +70,12 @@ class UserServer(Server):
         if rule.level >= user.level:
             user.level = rule.level
         _map = LVL_MAP[user.level]
+
+        rule = get_rule_level_by_level(self.db, user.level)
+        if rule is None:
+            user.until_next_level = 0
+        else:
+            user.until_next_level = rule.exp_gte - user.total_exp
         user.level_name = _map["level_name"]
         user.year = _map["year"]
         update_user(self.db, user)

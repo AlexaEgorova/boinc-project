@@ -27,6 +27,7 @@ class User(SQLModel):
 
     level: int = 1
     level_name: str = "абитуриент"
+    until_next_level: float = 0
     year: str = ""
     total_exp: float
     total_money: int
