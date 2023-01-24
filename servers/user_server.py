@@ -298,6 +298,7 @@ class UserServer(Server):
     async def get_avatar(
         self,
         username: str,
+        total_score: float,
         expavg_score: float,
         cpus: int,
         registration_time: datetime,
@@ -309,6 +310,7 @@ class UserServer(Server):
         )
 
         total_score = calc_score(
+            total_score,
             expavg_score,
             cpus,
             registration_time,
@@ -322,6 +324,7 @@ class UserServer(Server):
     async def get_tip(
         self,
         username: str,
+        total_score: float,
         expavg_score: float,
         cpus: int,
         registration_time: datetime,
@@ -333,6 +336,7 @@ class UserServer(Server):
         )
 
         total_score = calc_score(
+            total_score,
             expavg_score,
             cpus,
             registration_time,
@@ -342,6 +346,7 @@ class UserServer(Server):
         return tip_gen(
             self.db,
             user,
+            total_score,
             expavg_score,
             self.model,
             self.tokenizer,
@@ -350,6 +355,7 @@ class UserServer(Server):
     async def get_level(
         self,
         username: str,
+        total_score: float,
         expavg_score: float,
         cpus: int,
         registration_time: datetime,

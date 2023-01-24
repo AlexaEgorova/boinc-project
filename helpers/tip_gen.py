@@ -10,10 +10,11 @@ from helpers.rules import get_rule_level_by_level
 
 
 def calc_score(
+    total_score: float,
     expavg_score: float,
     cpus: int,
     registration_time: datetime,
-):
+) -> float:
     """Calculate the score."""
     def sigmoid(x: float) -> float:
         return 1 / (1 + math.exp(-x))
@@ -22,7 +23,10 @@ def calc_score(
         datetime.now(timezone.utc) - registration_time
     ).total_seconds() / (3600 * 24)
 
-    return 50 * (cpus + 1) * sigmoid(0.01 * (delta_t + expavg_score))
+    return (
+        50 * (cpus + 1) * sigmoid(0.01 * (delta_t + expavg_score))
+        + 0.001 * total_score
+    )
 
 
 def _ask_model(model, tokenizer, query):

@@ -181,6 +181,7 @@ async def get_avatar(
     expavg_score: float,
     cpus: int,
     registration_time: datetime,
+    total_score: float = 0.0,
 ) -> RedirectResponse:
     """Получить аватар."""
     return await server.get_avatar(
@@ -188,6 +189,7 @@ async def get_avatar(
         expavg_score=expavg_score,
         cpus=cpus,
         registration_time=registration_time,
+        total_score=total_score
     )
 
 
@@ -201,6 +203,7 @@ async def get_tip(
     expavg_score: float,
     cpus: int,
     registration_time: datetime,
+    total_score: float = 0.0,
 ) -> UserTip:
     """Получить совет."""
     return await server.get_tip(
@@ -208,6 +211,7 @@ async def get_tip(
         expavg_score=expavg_score,
         cpus=cpus,
         registration_time=registration_time,
+        total_score=total_score
     )
 
 
@@ -221,6 +225,7 @@ async def get_level(
     expavg_score: float,
     cpus: int,
     registration_time: datetime,
+    total_score: float = 0.0,
 ) -> User:
     """Получить уровень."""
     return await server.get_level(
@@ -228,4 +233,5 @@ async def get_level(
         expavg_score=expavg_score,
         cpus=cpus,
         registration_time=registration_time,
+        total_score=total_score
     )
