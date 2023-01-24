@@ -33,7 +33,7 @@ def _ask_model(model, tokenizer, query):
     )
     output_sequences = model.generate(
         input_ids=encoded_prompt,
-        max_length=40,
+        max_length=30,
         top_k=5,
         top_p=0.95,
         do_sample=True,
