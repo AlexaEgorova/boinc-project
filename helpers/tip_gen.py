@@ -172,11 +172,11 @@ def tip_gen(
         tokenizer,
         TIP_GENS[choice(TIPS_LAZY)](db, user)
     )
+    text = text.strip().rstrip("\n")
     text = ".".join(text.split(".")[:-1])
     if len(text.split("\n")) > 2:
         text = "\n".join(text.split("\n")[:-1])
 
-    text = text.strip()
 
     return UserTip(
         text=text
