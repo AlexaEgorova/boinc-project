@@ -176,6 +176,19 @@ def tip_gen(
     for _ in range(10):
         text = text.replace("\n\n\n", "\n\n")
     text = text.strip()
+
+    text = text\
+        .split("0")[0]\
+        .split("1")[0]\
+        .split("2")[0]\
+        .split("3")[0]\
+        .split("4")[0]\
+        .split("5")[0]\
+        .split("6")[0]\
+        .split("7")[0]\
+        .split("8")[0]\
+        .split("9")[0]
+
     text = ".".join(text.split(".")[:-1])
     if len(text.split("\n")) > 2:
         text = "\n".join(text.split("\n")[:-1])
