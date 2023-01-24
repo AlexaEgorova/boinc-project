@@ -33,10 +33,11 @@ def _ask_model(model, tokenizer, query):
     )
     output_sequences = model.generate(
         input_ids=encoded_prompt,
-        max_length=20,
+        max_length=50,
         top_k=5,
         top_p=0.95,
-        do_sample=True
+        do_sample=True,
+
     )
     if len(output_sequences.shape) > 2:
         output_sequences.squeeze_()
