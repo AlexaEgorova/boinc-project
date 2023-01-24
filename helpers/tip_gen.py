@@ -173,9 +173,9 @@ def tip_gen(
         tokenizer,
         TIP_GENS[choice(TIPS_LAZY)](db, user)
     )
-    for _ in range(10):
-        text = text.replace("\n\n\n", "\n\n")
-    text = text.strip()
+    # for _ in range(10):
+    #     text = text.replace("\n\n\n", "\n\n")
+    text = text.strip(" \n")
 
     text = text\
         .split("0")[0]\
@@ -190,6 +190,7 @@ def tip_gen(
         .split("9")[0]
 
     text = ".".join(text.split(".")[:-1])
+    text = ",".join(text.split(",")[:-1]) + "."
     if len(text.split("\n")) > 2:
         text = "\n".join(text.split("\n")[:-1])
 
