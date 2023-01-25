@@ -172,6 +172,24 @@ async def switch_gender(
 
 
 @router.get(
+    "/zpg/user/{username}/gender",
+    summary="Сменить пол",
+    response_class=RedirectResponse,
+)
+async def get_switch_gender(
+    username: str,
+    callback: Optional[str] = None
+) -> RedirectResponse:
+    """Сменить пол."""
+    if callback is None:
+        callback = server.config.base_url
+    await server.switch_gender(
+        username=username
+    )
+    return RedirectResponse(callback)
+
+
+@router.get(
     "/zpg/user/{username}/image",
     summary="Получить аватар",
     response_class=RedirectResponse,
