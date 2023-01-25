@@ -71,7 +71,7 @@ class UserServer(Server):
             user.level = rule.level
         _map = LVL_MAP[user.level]
 
-        rule = get_rule_level_by_level(self.db, user.level)
+        rule = get_rule_level_by_level(self.db, user.level + 1)
         if rule is None:
             user.until_next_level = 0
         else:
