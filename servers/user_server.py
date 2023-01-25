@@ -325,7 +325,13 @@ class UserServer(Server):
 
         img = f"{user.gender}_level_{user.level}.png"
         url = self.config.base_url + f"/assets/rendered/{img}"
-        return RedirectResponse(url)
+        return RedirectResponse(
+            url,
+            headers={
+                'Content-Type': 'image/png',
+                "ngrok-skip-browser-warning": "69420"
+            }
+        )
 
     async def get_tip(
         self,
