@@ -90,6 +90,8 @@ class UserServer(Server):
             user.current_streak += 1
         user.max_streak = max(user.current_streak, user.max_streak)
 
+        user.last_online = datetime.now(timezone.utc)
+
         update_user(self.db, user)
         return user
 
