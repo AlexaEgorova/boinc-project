@@ -88,7 +88,8 @@ class UserServer(Server):
         print("delta_days", delta_days, last_online, today)
         if delta_days > 1:
             user.current_streak = 0
-        user.current_streak += 1
+        if delta_days:
+            user.current_streak += 1
         user.max_streak = max(user.current_streak, user.max_streak)
 
         if not user.has_android and has_android:
