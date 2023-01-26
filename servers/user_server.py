@@ -1,5 +1,4 @@
 """User server."""
-import math
 from datetime import datetime, timezone
 from typing import Type, overload
 
@@ -26,7 +25,9 @@ from helpers.objects import (
 )
 from helpers.rules import (
     get_rule_level_by_exp,
-    get_rule_level_by_level
+    get_rule_level_by_level,
+    get_rule_item_by_exp,
+    get_rule_item_by_level
 )
 from servers.server import Server
 
@@ -81,6 +82,24 @@ class UserServer(Server):
             user.until_next_level = next_lvl_rule.exp_gte - user.total_exp
         user.level_name = _map["level_name"]
         user.year = _map["year"]
+
+        rule_item = get_rule_item_by_exp(self.db, user.total_exp)
+        if rule_item is None:
+            return user
+        if rule_item.level >= user.item_level:
+            user.item_level = rule_item.level
+
+        next_lvl_rule_item = get_rule_item_by_level(
+            self.db,
+            user.item_level + 1
+        )
+
+        if next_lvl_rule_item is None:
+            user.until_next_item = 0
+            user.next_item = ""
+        else:
+            user.until_next_item = next_lvl_rule_item.exp_gte - user.total_exp
+            user.next_item = next_lvl_rule_item.item
 
         today = dt2date(datetime.now(timezone.utc))
         last_online = dt2date(user.last_online)

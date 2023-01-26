@@ -8,7 +8,8 @@ from models.objects import (
     ObjMisc
 )
 from models.rules import (
-    RuleLevel
+    RuleLevel,
+    RuleItem
 )
 
 
@@ -23,6 +24,7 @@ class Store(SQLModel):
     """Store."""
 
     rule_levels: List[RuleLevel] = Field(default_factory=list)
+    rule_items: List[RuleItem] = Field(default_factory=list)
     tables: List[ObjTable] = Field(default_factory=list)
     chairs: List[ObjChair] = Field(default_factory=list)
     misc: List[ObjMisc] = Field(default_factory=list)

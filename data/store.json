@@ -27,19 +27,34 @@
     }
   ],
   "rule_levels": [
-    { "level":2, "exp_gte": 50 },
-    { "level":3, "exp_gte": 200 },
-    { "level":4, "exp_gte": 350 },
-    { "level":5, "exp_gte": 500 },
-    { "level":6, "exp_gte": 750 },
-    { "level":7, "exp_gte": 1000 },
-    { "level":8, "exp_gte": 1400 },
-    { "level":9, "exp_gte": 1800 },
-    { "level":10, "exp_gte": 2200 },
-    { "level":11, "exp_gte": 2600 },
-    { "level":12, "exp_gte": 3200 },
-    { "level":13, "exp_gte": 4200 },
-    { "level":14, "exp_gte": 6000 },
-    { "level":15, "exp_gte": 7000 }
+    { "level": 2, "exp_gte": 50 },
+    { "level": 3, "exp_gte": 130 },
+    { "level": 4, "exp_gte": 200 },
+    { "level": 5, "exp_gte": 300 },
+    { "level": 6, "exp_gte": 500 },
+    { "level": 7, "exp_gte": 750 },
+    { "level": 8, "exp_gte": 1250 },
+    { "level": 9, "exp_gte": 1750 },
+    { "level": 10, "exp_gte": 2500 },
+    { "level": 11, "exp_gte": 3500 },
+    { "level": 12, "exp_gte": 4500 },
+    { "level": 13, "exp_gte": 6000 }
+  ],
+  "rule_items": [
+    { "level": 2, "exp_gte": 20, "item": "Лупа" },
+    { "level": 3, "exp_gte": 40, "item": "Колба" }
+    { "level": 4, "exp_gte": 75, "item": "Колба" },
+    { "level": 5, "exp_gte": 100, "item": "Доска" },
+    { "level": 6, "exp_gte": 150, "item": "Колба" },
+    { "level": 7, "exp_gte": 175, "item": "Таблица Менделеева" },
+    { "level": 8, "exp_gte": 250, "item": "Макет черепа" },
+    { "level": 9, "exp_gte": 350, "item": "Весы" },
+    { "level": 10, "exp_gte": 600, "item": "Книги" },
+    { "level": 11, "exp_gte": 1000, "item": "Термометр" },
+    { "level": 12, "exp_gte": 1500, "item": "Горелка" },
+    { "level": 13, "exp_gte": 2000, "item": "Спектрометр" },
+    { "level": 14, "exp_gte": 3000, "item": "Холодильник" },
+    { "level": 15, "exp_gte": 4000, "item": "Микроскоп" },
+    { "level": 16, "exp_gte": 5000, "item": "Лазер" }
   ]
 }

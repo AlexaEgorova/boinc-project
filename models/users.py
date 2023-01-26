@@ -37,6 +37,7 @@ class User(SQLModel):
     total_exp: float
     total_money: int
 
+    item_level: int = 1
     next_item: str = ""
     until_next_item: float = 0
 
@@ -45,7 +46,7 @@ class User(SQLModel):
 
     has_android: bool = False
     total_hosts: int = 0
-    
+
     table: str = Field("default")
     chair: str = Field("default")
     misc: List[str] = Field(default_factory=list)

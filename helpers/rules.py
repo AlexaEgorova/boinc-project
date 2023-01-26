@@ -3,6 +3,7 @@ from typing import Optional, List
 from mongo import Database, ObjectId
 
 from models.rules import (
+    RuleItem,
     RuleLevel
 )
 
@@ -32,6 +33,33 @@ def get_rule_level_by_exp(
     if data is None:
         return None
     return RuleLevel(**data)
+
+
+def get_rule_item_by_level(
+    db: Database,
+    level: int,
+) -> Optional[RuleItem]:
+    """Get rule by level."""
+    data = db[RuleItem.__colname__].find_one(
+        filter={"level": level}
+    )
+    if data is None:
+        return None
+    return RuleItem(**data)
+
+
+def get_rule_item_by_exp(
+    db: Database,
+    exp: float,
+) -> Optional[RuleItem]:
+    """Get rule by level."""
+    data = db[RuleItem.__colname__].find_one(
+        filter={"exp_gte": {"$lt": exp}},
+        sort=[("exp_gte", -1)]
+    )
+    if data is None:
+        return None
+    return RuleItem(**data)
 
 
 def get_rule_levels(
