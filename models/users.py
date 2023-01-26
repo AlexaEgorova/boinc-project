@@ -13,6 +13,11 @@ class CharacterSet(SQLModel):
     lowerdress: str = Field("default")
 
 
+def dt2date(dt: datetime) -> datetime:
+    now = dt.date()
+    return datetime(now.year, now.month, now.day, tzinfo=timezone.utc)
+
+
 class User(SQLModel):
     """User."""
 
@@ -32,7 +37,17 @@ class User(SQLModel):
     total_exp: float
     total_money: int
 
-    # character: CharacterSet = Field(default_factory=list)
+    next_item: str = ""
+    until_next_item: float = 0
+
+    current_streak: int = 0
+    max_streak: int = 0
+    # last_calculation_date: datetime = Field(
+    #     default_factory=lambda: dt2date(datetime.now(timezone.utc))
+    # )
+
+
+    # character: CharacterSet = Field(default_factolambda: datetime()ry=list)
     table: str = Field("default")
     chair: str = Field("default")
     misc: List[str] = Field(default_factory=list)

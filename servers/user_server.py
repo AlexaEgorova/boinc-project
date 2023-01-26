@@ -1,6 +1,6 @@
 """User server."""
 import math
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Type, overload
 
 from fastapi import status
@@ -8,7 +8,7 @@ from fastapi.responses import Response, RedirectResponse
 from fastapi.exceptions import HTTPException
 from helpers.tip_gen import calc_score, tip_gen
 
-from models.users import User, UserFilled, UserTip
+from models.users import User, UserFilled, UserTip, dt2date
 from models.objects import (
     ObjTable,
     ObjChair,
@@ -71,13 +71,25 @@ class UserServer(Server):
             user.level = rule.level
         _map = LVL_MAP[user.level]
 
-        rule = get_rule_level_by_level(self.db, user.level + 1)
-        if rule is None:
+        next_lvl_rule = get_rule_level_by_level(self.db, user.level + 1)
+
+        if next_lvl_rule is None:
             user.until_next_level = 0
         else:
-            user.until_next_level = rule.exp_gte - user.total_exp
+            user.until_next_level = next_lvl_rule.exp_gte - user.total_exp
         user.level_name = _map["level_name"]
         user.year = _map["year"]
+
+        today = dt2date(datetime.now(timezone.utc))
+        last_online = dt2date(user.last_online)
+        delta_days = round((last_online - today).total_seconds() / (3600 * 24))
+
+        if delta_days > 1:
+            user.current_streak = 0
+        if delta_days == 1:
+            user.current_streak += 1
+        user.max_streak = max(user.current_streak, user.max_streak)
+
         update_user(self.db, user)
         return user
 
