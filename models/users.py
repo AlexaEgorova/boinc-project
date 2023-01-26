@@ -42,6 +42,8 @@ class User(SQLModel):
 
     current_streak: int = 0
     max_streak: int = 0
+
+    has_android: bool = False
     # last_calculation_date: datetime = Field(
     #     default_factory=lambda: dt2date(datetime.now(timezone.utc))
     # )

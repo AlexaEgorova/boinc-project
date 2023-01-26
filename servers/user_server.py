@@ -57,7 +57,8 @@ class UserServer(Server):
         self,
         user: User,
         exp_added: int = 0,
-        total_exp: float = 0
+        total_exp: float = 0,
+        has_android: bool = False,
     ) -> User:
         """Give exp to user."""
         if exp_added:
@@ -89,6 +90,9 @@ class UserServer(Server):
         if delta_days == 1:
             user.current_streak += 1
         user.max_streak = max(user.current_streak, user.max_streak)
+
+        if not user.has_android and has_android:
+            user.has_android = True
 
         user.last_online = datetime.now(timezone.utc)
 
@@ -322,6 +326,7 @@ class UserServer(Server):
         expavg_score: float,
         cpus: int,
         registration_time: datetime,
+        has_android: bool,
     ) -> RedirectResponse:
         """Get user avatar."""
         user = await self.get_user(
@@ -335,7 +340,11 @@ class UserServer(Server):
             cpus,
             registration_time,
         )
-        user = await self._promote_user(user, total_exp=total_score)
+        user = await self._promote_user(
+            user,
+            total_exp=total_score,
+            has_android=has_android,
+        )
 
         img = f"{user.gender}_level_{user.level}.png"
         url = self.config.base_url + f"/assets/rendered/{img}"
@@ -354,6 +363,7 @@ class UserServer(Server):
         expavg_score: float,
         cpus: int,
         registration_time: datetime,
+        has_android: bool,
     ) -> UserTip:
         """Get tip."""
         user = await self.get_user(
@@ -367,7 +377,11 @@ class UserServer(Server):
             cpus,
             registration_time,
         )
-        user = await self._promote_user(user, total_exp=total_score)
+        user = await self._promote_user(
+            user,
+            total_exp=total_score,
+            has_android=has_android,
+        )
 
         return tip_gen(
             self.db,
@@ -384,6 +398,7 @@ class UserServer(Server):
         expavg_score: float,
         cpus: int,
         registration_time: datetime,
+        has_android: bool,
     ) -> User:
         """Get user avatar."""
         user = await self.get_user(
@@ -397,5 +412,9 @@ class UserServer(Server):
             cpus,
             registration_time,
         )
-        user = await self._promote_user(user, total_exp=total_score)
+        user = await self._promote_user(
+            user,
+            total_exp=total_score,
+            has_android=has_android,
+        )
         return user

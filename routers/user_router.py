@@ -200,6 +200,7 @@ async def get_avatar(
     cpus: int,
     registration_time: datetime,
     total_score: float = 0.0,
+    has_android: bool = False
 ) -> RedirectResponse:
     """Получить аватар."""
     return await server.get_avatar(
@@ -222,6 +223,7 @@ async def get_tip(
     cpus: int,
     registration_time: datetime,
     total_score: float = 0.0,
+    has_android: bool = False
 ) -> UserTip:
     """Получить совет."""
     return await server.get_tip(
@@ -244,6 +246,7 @@ async def get_level(
     cpus: int,
     registration_time: datetime,
     total_score: float = 0.0,
+    has_android: bool = False
 ) -> User:
     """Получить уровень."""
     return await server.get_level(
