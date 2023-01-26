@@ -1,3 +1,4 @@
+import re
 from datetime import datetime, timezone
 import math
 from random import choice
@@ -35,13 +36,15 @@ def _ask_model(model, tokenizer, query):
         add_special_tokens=False,
         return_tensors='pt'
     )
+    encoded_bad = tokenizer.encode("секс", add_prefix_space=True)
     output_sequences = model.generate(
         input_ids=encoded_prompt,
-        max_length=30,
+        max_length=40,
+        min_length=30,
         top_k=5,
         top_p=0.95,
         do_sample=True,
-
+        bad_words_ids=[encoded_bad],
     )
     if len(output_sequences.shape) > 2:
         output_sequences.squeeze_()
@@ -61,21 +64,21 @@ def _tip_gen_mot(db: Database, user: User) -> str:
     return choice(tips).capitalize()
 
 
-def _tip_gen_prj(db: Database, user: User) -> str:
-    """Выдержки из описания проекта."""
-    total_users = db[User.__colname__].count({})
-    tips = [
-        f"а вы знали, что у нас уже {total_users} пользователей?"
-    ]
-    return choice(tips).capitalize()
+# def _tip_gen_prj(db: Database, user: User) -> str:
+#     """Выдержки из описания проекта."""
+#     total_users = db[User.__colname__].count({})
+#     tips = [
+#         f"а вы знали, что у нас уже {total_users} пользователей?"
+#     ]
+#     return choice(tips).capitalize()
 
 
-def _tip_gen_lab(db: Database, user: User) -> str:
-    tips = [
-        "так хочется ещё одну колбу...",
-        "скорее бы уже микроскоп..."
-    ]
-    return choice(tips).capitalize()
+# def _tip_gen_lab(db: Database, user: User) -> str:
+#     tips = [
+#         "так хочется ещё одну колбу...",
+#         "скорее бы уже микроскоп..."
+#     ]
+#     return choice(tips).capitalize()
 
 
 def _tip_gen_avatar(db: Database, user: User) -> str:
@@ -83,6 +86,8 @@ def _tip_gen_avatar(db: Database, user: User) -> str:
     tips = [
         "хочу селекционировать новый вид хищных растений.",
         "надо бы доказать теорему."
+        "срочно нужно сделать важно открытие",
+        "формула для вычисления"
     ]
     return choice(tips).capitalize()
 
@@ -92,6 +97,7 @@ def _tip_gen_general(db: Database, user: User) -> str:
     tips = [
         "здравствуй!",
         "рад тебя видеть!",
+        "приветствую!"
         "погода сегодня очень подходит для научных свершений!"
     ]
     return choice(tips).capitalize()
@@ -102,6 +108,8 @@ def _tip_gen_astrology(db: Database, user: User) -> str:
     tips = [
         "Хмм отрицательная производная в фазе меркурия"
         ", видимо, он ретроградный..."
+        "Венера в",
+        "Марс в"
     ]
     return choice(tips).capitalize()
 
@@ -138,7 +146,7 @@ TIPS_BUSY = [
 TIP_GENS = {
     "general": _tip_gen_general,
     "mot": _tip_gen_mot,
-    "lab": _tip_gen_lab,
+    # "lab": _tip_gen_lab,
     "avatar": _tip_gen_avatar,
     "astrology": _tip_gen_astrology,
     # "lvl": _tip_gen_lvl,
@@ -155,44 +163,47 @@ def tip_gen(
 ) -> UserTip:
     now = datetime.now(timezone.utc)
     onl = user.last_online
-    if now.date() != onl.date():
-        text = _ask_model(
-            model,
-            tokenizer,
-            TIP_GENS[choice(TIPS_HELLO)](db, user)
-        )
-    elif expavg_score > 0.5:
-        text = _ask_model(
-            model,
-            tokenizer,
-            TIP_GENS[choice(TIPS_BUSY)](db, user)
-        )
+    text = ''
+    while (not re.search(r'\d+', text).group()):
+        if now.date() != onl.date():
+            text = _ask_model(
+                model,
+                tokenizer,
+                TIP_GENS[choice(TIPS_HELLO)](db, user)
+            )
+        elif expavg_score > 0.5:
+            text = _ask_model(
+                model,
+                tokenizer,
+                TIP_GENS[choice(TIPS_BUSY)](db, user)
+            )
 
-    else:
-        text = _ask_model(
-            model,
-            tokenizer,
-            TIP_GENS[choice(TIPS_LAZY)](db, user)
-        )
+        else:
+            text = _ask_model(
+                model,
+                tokenizer,
+                TIP_GENS[choice(TIPS_LAZY)](db, user)
+            )
+
     # for _ in range(10):
     #     text = text.replace("\n\n\n", "\n\n")
     text = text.strip(" \n")
 
-    text = text.split("0")[0]
-    text = text.split("1")[0]
-    text = text.split("2")[0]
-    text = text.split("3")[0]
-    text = text.split("4")[0]
-    text = text.split("5")[0]
-    text = text.split("6")[0]
-    text = text.split("7")[0]
-    text = text.split("8")[0]
-    text = text.split("9")[0]
+    # text = text.split("0")[0]
+    # text = text.split("1")[0]
+    # text = text.split("2")[0]
+    # text = text.split("3")[0]
+    # text = text.split("4")[0]
+    # text = text.split("5")[0]
+    # text = text.split("6")[0]
+    # text = text.split("7")[0]
+    # text = text.split("8")[0]
+    # text = text.split("9")[0]
 
     if len(text.split(".")) > 2:
         text = ".".join(text.split(".")[:-1])
-    if len(text.split(",")) > 2:
-        text = ",".join(text.split(",")[:-1]) + "."
+    # if len(text.split(",")) > 2:
+    #     text = ",".join(text.split(",")[:-1]) + "."
     if len(text.split("\n")) > 2:
         text = "\n".join(text.split("\n")[:-1])
 
