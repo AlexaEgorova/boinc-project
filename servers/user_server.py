@@ -98,7 +98,8 @@ class UserServer(Server):
         if not user.has_android and has_android:
             user.has_android = True
 
-        user.total_hosts = total_hosts
+        if total_hosts:
+            user.total_hosts = total_hosts
 
         user.last_online = datetime.now(timezone.utc)
 
@@ -332,8 +333,7 @@ class UserServer(Server):
         expavg_score: float,
         cpus: int,
         registration_time: datetime,
-        has_android: bool,
-        total_hosts: int
+        has_android: bool
     ) -> RedirectResponse:
         """Get user avatar."""
         user = await self.get_user(
@@ -351,7 +351,7 @@ class UserServer(Server):
             user,
             total_exp=total_score,
             has_android=has_android,
-            total_hosts=total_hosts
+            total_hosts=cpus
         )
 
         img = f"{user.gender}_level_{user.level}.png"
@@ -371,8 +371,7 @@ class UserServer(Server):
         expavg_score: float,
         cpus: int,
         registration_time: datetime,
-        has_android: bool,
-        total_hosts: int
+        has_android: bool
     ) -> UserTip:
         """Get tip."""
         user = await self.get_user(
@@ -390,7 +389,7 @@ class UserServer(Server):
             user,
             total_exp=total_score,
             has_android=has_android,
-            total_hosts=total_hosts
+            total_hosts=cpus
         )
 
         return tip_gen(
@@ -408,8 +407,7 @@ class UserServer(Server):
         expavg_score: float,
         cpus: int,
         registration_time: datetime,
-        has_android: bool,
-        total_hosts: int
+        has_android: bool
     ) -> User:
         """Get user avatar."""
         user = await self.get_user(
@@ -427,6 +425,6 @@ class UserServer(Server):
             user,
             total_exp=total_score,
             has_android=has_android,
-            total_hosts=total_hosts
+            total_hosts=cpus
         )
         return user
