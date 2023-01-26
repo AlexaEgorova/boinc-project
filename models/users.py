@@ -44,12 +44,8 @@ class User(SQLModel):
     max_streak: int = 0
 
     has_android: bool = False
-    # last_calculation_date: datetime = Field(
-    #     default_factory=lambda: dt2date(datetime.now(timezone.utc))
-    # )
-
-
-    # character: CharacterSet = Field(default_factolambda: datetime()ry=list)
+    total_hosts: int = 0
+    
     table: str = Field("default")
     chair: str = Field("default")
     misc: List[str] = Field(default_factory=list)

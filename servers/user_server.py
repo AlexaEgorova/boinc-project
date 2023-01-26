@@ -59,6 +59,7 @@ class UserServer(Server):
         exp_added: int = 0,
         total_exp: float = 0,
         has_android: bool = False,
+        total_hosts: int = 0,
     ) -> User:
         """Give exp to user."""
         if exp_added:
@@ -83,7 +84,9 @@ class UserServer(Server):
 
         today = dt2date(datetime.now(timezone.utc))
         last_online = dt2date(user.last_online)
-        delta_days = round((today - last_online).total_seconds() / (3600 * 24))
+        delta_days = round(
+            (today - last_online).total_seconds() / (3600 * 24 * 1.0)
+        )
 
         print("delta_days", delta_days, last_online, today)
         if delta_days > 1:
@@ -94,6 +97,8 @@ class UserServer(Server):
 
         if not user.has_android and has_android:
             user.has_android = True
+
+        user.total_hosts = total_hosts
 
         user.last_online = datetime.now(timezone.utc)
 
@@ -327,7 +332,8 @@ class UserServer(Server):
         expavg_score: float,
         cpus: int,
         registration_time: datetime,
-        has_android: bool = False,
+        has_android: bool,
+        total_hosts: int
     ) -> RedirectResponse:
         """Get user avatar."""
         user = await self.get_user(
@@ -345,6 +351,7 @@ class UserServer(Server):
             user,
             total_exp=total_score,
             has_android=has_android,
+            total_hosts=total_hosts
         )
 
         img = f"{user.gender}_level_{user.level}.png"
@@ -364,7 +371,8 @@ class UserServer(Server):
         expavg_score: float,
         cpus: int,
         registration_time: datetime,
-        has_android: bool = False,
+        has_android: bool,
+        total_hosts: int
     ) -> UserTip:
         """Get tip."""
         user = await self.get_user(
@@ -382,6 +390,7 @@ class UserServer(Server):
             user,
             total_exp=total_score,
             has_android=has_android,
+            total_hosts=total_hosts
         )
 
         return tip_gen(
@@ -399,7 +408,8 @@ class UserServer(Server):
         expavg_score: float,
         cpus: int,
         registration_time: datetime,
-        has_android: bool = False,
+        has_android: bool,
+        total_hosts: int
     ) -> User:
         """Get user avatar."""
         user = await self.get_user(
@@ -417,5 +427,6 @@ class UserServer(Server):
             user,
             total_exp=total_score,
             has_android=has_android,
+            total_hosts=total_hosts
         )
         return user
