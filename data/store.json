@@ -42,7 +42,7 @@
   ],
   "rule_items": [
     { "level": 2, "exp_gte": 20, "item": "Лупа" },
-    { "level": 3, "exp_gte": 40, "item": "Колба" }
+    { "level": 3, "exp_gte": 40, "item": "Колба" },
     { "level": 4, "exp_gte": 75, "item": "Колба" },
     { "level": 5, "exp_gte": 100, "item": "Доска" },
     { "level": 6, "exp_gte": 150, "item": "Колба" },
