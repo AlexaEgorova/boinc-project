@@ -165,7 +165,10 @@ def tip_gen(
     onl = user.last_online
     text = ''
 
-    while (re.search(r'\d+', text) is None):
+    while (
+        re.search(r'\w+', text) is None
+        or re.search(r'\d+', text) is not None
+    ):
         if now.date() != onl.date():
             text = _ask_model(
                 model,
