@@ -85,10 +85,10 @@ class UserServer(Server):
         last_online = dt2date(user.last_online)
         delta_days = round((last_online - today).total_seconds() / (3600 * 24))
 
+        print("delta_days", delta_days, last_online, today)
         if delta_days > 1:
             user.current_streak = 0
-        if delta_days == 1:
-            user.current_streak += 1
+        user.current_streak += 1
         user.max_streak = max(user.current_streak, user.max_streak)
 
         if not user.has_android and has_android:
