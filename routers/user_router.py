@@ -208,7 +208,8 @@ async def get_avatar(
         expavg_score=expavg_score,
         cpus=cpus,
         registration_time=registration_time,
-        total_score=total_score
+        total_score=total_score,
+        has_android=has_android
     )
 
 
@@ -231,7 +232,8 @@ async def get_tip(
         expavg_score=expavg_score,
         cpus=cpus,
         registration_time=registration_time,
-        total_score=total_score
+        total_score=total_score,
+        has_android=has_android
     )
 
 
@@ -254,5 +256,6 @@ async def get_level(
         expavg_score=expavg_score,
         cpus=cpus,
         registration_time=registration_time,
-        total_score=total_score
+        total_score=total_score,
+        has_android=has_android
     )

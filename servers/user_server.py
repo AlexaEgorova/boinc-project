@@ -326,7 +326,7 @@ class UserServer(Server):
         expavg_score: float,
         cpus: int,
         registration_time: datetime,
-        has_android: bool,
+        has_android: bool = False,
     ) -> RedirectResponse:
         """Get user avatar."""
         user = await self.get_user(
@@ -363,7 +363,7 @@ class UserServer(Server):
         expavg_score: float,
         cpus: int,
         registration_time: datetime,
-        has_android: bool,
+        has_android: bool = False,
     ) -> UserTip:
         """Get tip."""
         user = await self.get_user(
@@ -398,7 +398,7 @@ class UserServer(Server):
         expavg_score: float,
         cpus: int,
         registration_time: datetime,
-        has_android: bool,
+        has_android: bool = False,
     ) -> User:
         """Get user avatar."""
         user = await self.get_user(
