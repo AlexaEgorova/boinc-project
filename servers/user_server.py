@@ -83,7 +83,7 @@ class UserServer(Server):
 
         today = dt2date(datetime.now(timezone.utc))
         last_online = dt2date(user.last_online)
-        delta_days = round((last_online - today).total_seconds() / (3600 * 24))
+        delta_days = round((today - last_online).total_seconds() / (3600 * 24))
 
         print("delta_days", delta_days, last_online, today)
         if delta_days > 1:
