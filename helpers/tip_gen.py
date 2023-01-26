@@ -208,7 +208,8 @@ def tip_gen(
         text = ".".join(text.split(".")[:-1])
     if text[-1] not in [".", "!", "?"]:
         if len(text.split(",")) > 2:
-            text = ",".join(text.split(",")[:-1]) + "."
+            text = ",".join(text.split(",")[:-1])
+        text += "."
     if len(text.split("\n")) > 2:
         text = "\n".join(text.split("\n")[:-1])
 
