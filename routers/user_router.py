@@ -1,5 +1,8 @@
 from datetime import datetime
 from typing import Optional
+
+from pydantic import BaseModel
+
 from fastapi import APIRouter, Depends
 from fastapi.responses import RedirectResponse
 
@@ -171,19 +174,35 @@ async def switch_gender(
     return RedirectResponse(callback)
 
 
+class ServerInfo(BaseModel):
+
+    server: str = "gimmefy"
+    info: str = "kekekeke"
+
+
 @router.get(
-    "/zpg/user/{username}/gender",
+    "/zpg/info",
+    summary="Получить информацию",
+    response_model=ServerInfo,
+)
+async def get_info() -> ServerInfo:
+    """Получить информацию."""
+    return ServerInfo()
+
+
+@router.get(
+    "/zpg/user/{username}/theme",
     summary="Сменить пол",
     response_class=RedirectResponse,
 )
-async def get_switch_gender(
+async def get_switch_theme(
     username: str,
     callback: Optional[str] = None
 ) -> RedirectResponse:
     """Сменить пол."""
     if callback is None:
         callback = server.config.base_url
-    await server.switch_gender(
+    await server.switch_theme(
         username=username
     )
     return RedirectResponse(callback)

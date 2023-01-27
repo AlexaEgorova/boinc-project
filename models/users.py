@@ -25,6 +25,7 @@ class User(SQLModel):
 
     username: str
     gender: str = "male"
+    theme: str = "light"
 
     last_online: datetime = Field(
         default_factory=lambda: datetime.now(timezone.utc)

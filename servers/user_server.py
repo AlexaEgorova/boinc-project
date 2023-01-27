@@ -345,6 +345,22 @@ class UserServer(Server):
         update_user(self.db, user)
         return Response()
 
+    async def switch_theme(
+        self,
+        username: str
+    ) -> Response:
+        """Switch theme."""
+        user = await self.get_user(
+            username,
+            do_create=True
+        )
+        if user.theme == 'light':
+            user.theme = 'dark'
+        else:
+            user.theme = 'light'
+        update_user(self.db, user)
+        return Response()
+
     async def get_avatar(
         self,
         username: str,
@@ -402,7 +418,7 @@ class UserServer(Server):
         )
         print(next_img_str, next_img)
 
-        img = f"{user.gender}_level_{user.level}.png"
+        img = f"{user.gender}_level_{user.item_level}.png"
         url = self.config.base_url + f"/assets/rendered/{img}"
         return RedirectResponse(
             url,
