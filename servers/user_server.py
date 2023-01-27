@@ -373,6 +373,35 @@ class UserServer(Server):
             total_hosts=cpus
         )
 
+        theme = "light"
+        multiple_os = int(user.total_hosts >= 2)
+        streak = 1
+        if user.max_streak >= 7:
+            streak = 7
+        if user.max_streak >= 14:
+            streak = 14
+        next_img_str = (
+            "user.gender"
+            "__theme"
+            "__int(user.has_android)"
+            "__multiple_os"
+            "__streak"
+            "__user.level"
+            "__user.item_level"
+            ".png"
+        )
+        next_img = (
+            f"{user.gender}"
+            f"_{theme}"
+            f"_{int(user.has_android)}"
+            f"_{multiple_os}"
+            f"_{streak}"
+            f"_{user.level}"
+            f"_{user.item_level}"
+            ".png"
+        )
+        print(next_img_str, next_img)
+
         img = f"{user.gender}_level_{user.level}.png"
         url = self.config.base_url + f"/assets/rendered/{img}"
         return RedirectResponse(
