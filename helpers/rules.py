@@ -117,3 +117,60 @@ def delete_rule_levels(
     return db[RuleLevel.__colname__].delete_many(
         filter=filter
     ).deleted_count
+
+
+def get_rule_items(
+    db: Database,
+    filter: dict
+) -> List[RuleItem]:
+    """Get rule by item."""
+    data = db[RuleItem.__colname__].find(
+        filter=filter
+    )
+    rules: List[RuleItem] = []
+    for rule in data:
+        rules.append(RuleItem(**rule))
+    return rules
+
+
+def create_rule_item(
+    db: Database,
+    rule: RuleItem,
+) -> ObjectId:
+    """Create rule."""
+    return db[rule.__colname__].insert_one(
+        document=rule.dict()
+    ).inserted_id
+
+
+def update_rule_item(
+    db: Database,
+    rule: RuleItem,
+) -> int:
+    """Update rule."""
+    return db[rule.__colname__].update_one(
+        filter={"id": rule.item},
+        update={"$set": rule.dict()},
+    ).modified_count
+
+
+def upsert_rule_item(
+    db: Database,
+    rule: RuleItem,
+) -> int:
+    """Create rule."""
+    return db[rule.__colname__].update_one(
+        filter={"id": rule.item},
+        update={"$set": rule.dict()},
+        upsert=True
+    ).modified_count
+
+
+def delete_rule_items(
+    db: Database,
+    filter: dict
+) -> int:
+    """Delete rules."""
+    return db[RuleItem.__colname__].delete_many(
+        filter=filter
+    ).deleted_count

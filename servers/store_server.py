@@ -16,7 +16,10 @@ from helpers.objects import (
 from helpers.rules import (
     upsert_rule_level,
     get_rule_levels,
-    delete_rule_levels
+    delete_rule_levels,
+    upsert_rule_item,
+    get_rule_items,
+    delete_rule_items
 )
 from servers.server import Server
 
@@ -31,8 +34,10 @@ class ServiceServer(Server):
         chairs = get_objs(self.db, {}, ObjChair)
         misc = get_objs(self.db, {}, ObjMisc)
         rule_levels = get_rule_levels(self.db, {})
+        rule_items = get_rule_items(self.db, {})
         return Store(
             rule_levels=rule_levels,
+            rule_items=rule_items,
             tables=tables,
             chairs=chairs,
             misc=misc,
@@ -81,6 +86,15 @@ class ServiceServer(Server):
         deleted_count += delete_rule_levels(
             db=self.db,
             filter={"level": {"$nin": levels}},
+        )
+
+        items = []
+        for rule_item in store.rule_items:
+            items.append(rule_item.item)
+            modified_count += upsert_rule_item(self.db, rule_item)
+        deleted_count += delete_rule_items(
+            db=self.db,
+            filter={"item": {"$nin": items}},
         )
 
         return StoreUpdateResult(
