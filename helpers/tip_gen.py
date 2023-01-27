@@ -73,12 +73,11 @@ def _tip_gen_mot(db: Database, user: User) -> str:
 #     return choice(tips).capitalize()
 
 
-# def _tip_gen_lab(db: Database, user: User) -> str:
-#     tips = [
-#         "так хочется ещё одну колбу...",
-#         "скорее бы уже микроскоп..."
-#     ]
-#     return choice(tips).capitalize()
+def _tip_gen_lab(db: Database, user: User) -> str:
+    tips = [
+        f"скорее бы уже {user.next_item}..."
+    ]
+    return choice(tips).capitalize()
 
 
 def _tip_gen_avatar(db: Database, user: User) -> str:
@@ -146,7 +145,7 @@ TIPS_BUSY = [
 TIP_GENS = {
     "general": _tip_gen_general,
     "mot": _tip_gen_mot,
-    # "lab": _tip_gen_lab,
+    "lab": _tip_gen_lab,
     "avatar": _tip_gen_avatar,
     "astrology": _tip_gen_astrology,
     # "lvl": _tip_gen_lvl,
