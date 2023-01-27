@@ -417,9 +417,12 @@ class UserServer(Server):
             ".png"
         )
         print(next_img_str, next_img)
+        
+        pre = "light" if user.theme == "light" else "dark"
+        gen = "adv_man" if user.gender == "male" else "adv_woman"
 
-        img = f"{user.gender}_level_{user.item_level}.png"
-        url = self.config.base_url + f"/assets/rendered/{img}"
+        img = f"{pre}/{gen}/{gen}_{user.item_level}.png"
+        url = self.config.base_url + f"/assets/{img}"
         return RedirectResponse(
             url,
             headers={
