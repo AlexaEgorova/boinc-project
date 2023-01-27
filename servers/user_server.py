@@ -68,10 +68,9 @@ class UserServer(Server):
         if total_exp:
             user.total_exp = max(user.total_exp, total_exp)
         rule = get_rule_level_by_exp(self.db, user.total_exp)
-        if rule is None:
-            return user
-        if rule.level >= user.level:
-            user.level = rule.level
+        if rule is not None:
+            if rule.level >= user.level:
+                user.level = rule.level
         _map = LVL_MAP[user.level]
 
         next_lvl_rule = get_rule_level_by_level(self.db, user.level + 1)
