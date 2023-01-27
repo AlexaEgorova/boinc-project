@@ -183,13 +183,13 @@ class ServerInfo(BaseModel):
 @router.get(
     "/zpg/info",
     summary="Получить информацию",
-    response_class=HTMLResponse,
+    response_class=RedirectResponse,
 )
-async def get_info() -> HTMLResponse:
+async def get_info() -> RedirectResponse:
     """Получить информацию."""
-    with open(server.config.readme_path, "r") as rfile:
-        readme = rfile.read()
-    return HTMLResponse(readme)
+    return RedirectResponse(
+        url=server.config.base_url + "/assets/README.html"
+    )
 
 
 @router.get(

@@ -36,4 +36,3 @@ class GimmefyServerConfig(EnvSettings):
 
     mongo: MongoDBParams = MongoDBParams()  # type: ignore
     store_path: Path = Field(..., env="GIMMEFY_STORE_PATH")
-    readme_path: Path = Field(..., env="README_PATH")
