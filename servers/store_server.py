@@ -90,11 +90,11 @@ class ServiceServer(Server):
 
         items = []
         for rule_item in store.rule_items:
-            items.append(rule_item.item)
+            items.append(rule_item.level)
             modified_count += upsert_rule_item(self.db, rule_item)
         deleted_count += delete_rule_items(
             db=self.db,
-            filter={"item": {"$nin": items}},
+            filter={"level": {"$nin": items}},
         )
 
         return StoreUpdateResult(
