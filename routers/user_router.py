@@ -1,10 +1,8 @@
 from datetime import datetime
 from typing import Optional
 
-from pydantic import BaseModel
-
 from fastapi import APIRouter, Depends
-from fastapi.responses import RedirectResponse, HTMLResponse
+from fastapi.responses import RedirectResponse
 
 from config import GimmefyServerConfig
 from models.users import User, UserFilled, UserTip
@@ -156,7 +154,19 @@ async def purchase_misc(
     )
 
 
-@router.post(
+@router.get(
+    "/zpg/info",
+    summary="Получить информацию",
+    response_class=RedirectResponse,
+)
+async def get_info() -> RedirectResponse:
+    """Получить информацию."""
+    return RedirectResponse(
+        url=server.config.base_url + "/assets/README.html"
+    )
+
+
+@router.get(
     "/zpg/user/{username}/gender",
     summary="Сменить пол",
     response_class=RedirectResponse,
@@ -172,24 +182,6 @@ async def switch_gender(
         username=username
     )
     return RedirectResponse(callback)
-
-
-class ServerInfo(BaseModel):
-
-    server: str = "gimmefy"
-    info: str = "kekekeke"
-
-
-@router.get(
-    "/zpg/info",
-    summary="Получить информацию",
-    response_class=RedirectResponse,
-)
-async def get_info() -> RedirectResponse:
-    """Получить информацию."""
-    return RedirectResponse(
-        url=server.config.base_url + "/assets/README.html"
-    )
 
 
 @router.get(
