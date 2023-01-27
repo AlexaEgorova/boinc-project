@@ -44,17 +44,17 @@
     { "level": 2, "exp_gte": 0, "item": "Лупа" },
     { "level": 3, "exp_gte": 40, "item": "Колба" },
     { "level": 4, "exp_gte": 75, "item": "Колба" },
-    { "level": 5, "exp_gte": 100, "item": "Доска" },
-    { "level": 6, "exp_gte": 150, "item": "Колба" },
+    { "level": 5, "exp_gte": 100, "item": "Колба" },
+    { "level": 6, "exp_gte": 150, "item": "Доска" },
     { "level": 7, "exp_gte": 175, "item": "Таблица Менделеева" },
-    { "level": 8, "exp_gte": 250, "item": "Макет черепа" },
-    { "level": 9, "exp_gte": 350, "item": "Весы" },
+    { "level": 8, "exp_gte": 250, "item": "Весы" },
+    { "level": 9, "exp_gte": 350, "item": "Макет черепа" },
     { "level": 10, "exp_gte": 600, "item": "Книги" },
     { "level": 11, "exp_gte": 1000, "item": "Термометр" },
     { "level": 12, "exp_gte": 1500, "item": "Горелка" },
     { "level": 13, "exp_gte": 2000, "item": "Спектрометр" },
     { "level": 14, "exp_gte": 3000, "item": "Холодильник" },
-    { "level": 15, "exp_gte": 4000, "item": "Микроскоп" },
+    { "level": 15, "exp_gte": 4000, "item": "Телескоп" },
     { "level": 16, "exp_gte": 5000, "item": "Лазер" }
   ]
 }
