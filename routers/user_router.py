@@ -4,7 +4,7 @@ from typing import Optional
 from pydantic import BaseModel
 
 from fastapi import APIRouter, Depends
-from fastapi.responses import RedirectResponse
+from fastapi.responses import RedirectResponse, HTMLResponse
 
 from config import GimmefyServerConfig
 from models.users import User, UserFilled, UserTip
@@ -183,11 +183,13 @@ class ServerInfo(BaseModel):
 @router.get(
     "/zpg/info",
     summary="Получить информацию",
-    response_model=ServerInfo,
+    response_class=HTMLResponse,
 )
-async def get_info() -> ServerInfo:
+async def get_info() -> HTMLResponse:
     """Получить информацию."""
-    return ServerInfo()
+    with open(server.config.readme_path, "r") as rfile:
+        readme = rfile.read()
+    return HTMLResponse(readme)
 
 
 @router.get(
