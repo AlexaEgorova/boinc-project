@@ -45,6 +45,7 @@ def _ask_model(model, tokenizer, query):
         top_p=0.95,
         do_sample=True,
         bad_words_ids=[encoded_bad],
+        repetition_penalty=5.0
     )
     if len(output_sequences.shape) > 2:
         output_sequences.squeeze_()
@@ -85,8 +86,7 @@ def _tip_gen_avatar(db: Database, user: User) -> str:
     tips = [
         "хочу селекционировать новый вид хищных растений.",
         "надо бы доказать теорему.",
-        "срочно нужно сделать важно открытие",
-        "формула для вычисления"
+        "нужно сделать важное открытие",
     ]
     return choice(tips).capitalize()
 
@@ -107,8 +107,8 @@ def _tip_gen_astrology(db: Database, user: User) -> str:
     tips = [
         "Хмм отрицательная производная в фазе меркурия"
         ", видимо, он ретроградный..."
-        "Венера в",
-        "Марс в"
+        "планеты",
+        "звезды в небе"
     ]
     return choice(tips).capitalize()
 
@@ -205,10 +205,14 @@ def tip_gen(
 
     if len(text.split(".")) > 2:
         text = ".".join(text.split(".")[:-1])
-    if text[-1] not in [".", "!", "?"]:
-        if len(text.split(",")) > 2:
-            text = ",".join(text.split(",")[:-1])
-        text += "."
+    if len(text.split("!")) > 2:
+        text = ".".join(text.split(".")[:-1])
+    if len(text.split("?")) > 2:
+        text = ".".join(text.split(".")[:-1])
+    if len(text.split("!")) > 2:
+        text = ".".join(text.split(".")[:-1])
+    if len(text.split("?")) > 2:
+        text = ".".join(text.split(".")[:-1])
     if len(text.split("\n")) > 2:
         text = "\n".join(text.split("\n")[:-1])
 
